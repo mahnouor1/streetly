@@ -2,27 +2,18 @@
   "version": 2,
   "builds": [
     {
-      "src": "Streetly 4/**",
+      "src": "**",
       "use": "@vercel/static"
     }
   ],
   "routes": [
     {
-      "src": "/(.*)",
-      "dest": "/Streetly 4/$1"
-    },
-    {
-      "src": "/",
-      "dest": "/Streetly 4/index.html"
-    },
-    {
       "src": "/map",
-      "dest": "/Streetly 4/map.html"
+      "dest": "/map.html"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/$1"
     }
-  ],
-  "functions": {
-    "Streetly 4/**": {
-      "runtime": "@vercel/static"
-    }
-  }
+  ]
 }

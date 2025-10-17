@@ -1,5 +1,6 @@
 # Backend files (not needed for static frontend)
 backend/
+Streetly 4/
 __pycache__/
 *.pyc
 *.pyo

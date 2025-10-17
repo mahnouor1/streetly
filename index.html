@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Streetly</title>
+    <link rel="stylesheet" href="HOME.css" />
+    <link
+      rel="icon"
+      type="image/x-icon"
+      href="images/Travel Influencer Vlogger Logo in Blue Green Brown Organic Illustration Style (1).png "
+    />
+    <script
+      src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap"
+      async
+      defer
+    ></script>
+  </head>
+  <body>
+    <header class="navbar">
+      <div class="navbar__container" id="intro">
+        <img
+          src="images/Travel Influencer Vlogger Logo in Blue Green Brown Organic Illustration Style (1).png"
+          alt=""
+          class="nav__logo"
+        />
+        <nav class="navbar__menu">
+          <ul class="navbar__list">
+            <li><a href="#services" class="navbar__link">About Us</a></li>
+            <li><a href="#gallery" class="navbar__link">Explore</a></li>
+            <li>
+              <a href="map.html" class="navbar__btn">TRY NOW</a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <div class="container">
+      <section class="intro-section">
+        <h1>
+          &Tab;<span class="Highlight">Streetly</span><br />
+          travel made easy
+        </h1>
+        <p>
+          StreetSmart is your AI travel buddy – find the best routes, stay safe
+          with weather alerts, and taste the city with local food picks. All in
+          one app.
+        </p>
+        <a href="map.html" class="navbar__btn a">TRY NOW</a>
+      </section>
+
+      <section class="mockups-section">
+        <div class="mockup-card">
+          <div class="phone-frame smart-routes-frame">
+            <img
+              src="images/smart-routes.png"
+              alt="Smart Routes"
+              class="mockup-image"
+            />
+          </div>
+        </div>
+        <div class="mockup-card">
+          <div class="phone-frame weather-alert-frame">
+            <img
+              src="images/weather-alert.png"
+              alt="Weather Alert"
+              class="mockup-image"
+            />
+          </div>
+        </div>
+        <div class="mockup-card">
+          <div class="phone-frame food-picks-frame">
+            <img
+              src="images/food-picks.png"
+              alt="Food Picks"
+              class="mockup-image"
+            />
+          </div>
+        </div>
+      </section>
+    </div>
+    <section class="services-section" id="services">
+      <div class="services-header">
+        <h1>We offer our best services</h1>
+      </div>
+      <div class="services-container">
+        <div class="service-card">
+          <div class="icon-circle">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="feather feather-cloud-sun"
+            >
+              <path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2z"></path>
+              <path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8z"></path>
+            </svg>
+          </div>
+          <h2>Routes</h2>
+          <p>
+            Find the most efficient and scenic paths to your destination with
+            our smart routing system, designed for a smooth journey.
+          </p>
+        </div>
+        <div class="service-card">
+          <div class="icon-circle">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="feather feather-zap"
+            >
+              <path d="M13 2L3 14h9l-1 8L21 10h-9L13 2z"></path>
+            </svg>
+          </div>
+          <h2><strong>Disaster Alert!</strong></h2>
+          <p>
+            Stay one step ahead with real-time disaster alerts and forecasts,
+            ensuring you are always prepared for what's coming.
+          </p>
+        </div>
+        <div class="service-card">
+          <div class="icon-circle">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="feather feather-shopping-bag"
+            >
+              <path
+                d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"
+              ></path>
+              <line x1="3" y1="6" x2="21" y2="6"></line>
+              <path d="M16 10a4 4 0 0 1-8 0"></path>
+            </svg>
+          </div>
+          <h2>AI Companion</h2>
+          <p>
+            Your intelligent travel assistant that provides personalized
+            recommendations and guidance, making every trip a smooth adventure.
+          </p>
+        </div>
+        <div class="service-card">
+          <div class="icon-circle">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="feather feather-shield"
+            >
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+            </svg>
+          </div>
+          <h2>SOS Dedication</h2>
+          <p>
+            Emergency assistance and safety features to ensure your security
+            and peace of mind during your travels.
+          </p>
+        </div>
+      </div>
+    </section>
+    <section class="tours-section" id="gallery">
+      <span class="tag">Explore</span>
+      <h2>Our featured tours</h2>
+      <div class="tours-grid">
+        <div class="tour-card large">
+          <img src="images/hunza.jpeg" alt="Hunza Valley, Pakistan" />
+          <div class="tour-info">
+            <h3>Hunza Valley</h3>
+            <p>PAKISTAN</p>
+          </div>
+        </div>
+        <div class="tour-card large">
+          <img src="images/skardu.jpeg" alt="Skardu, Pakistan" />
+          <div class="tour-info">
+            <h3>Skardu</h3>
+            <p>PAKISTAN</p>
+          </div>
+        </div>
+        <div class="tour-card extra-large">
+          <img src="images/naran.jpeg" alt="Naran, Pakistan" />
+          <div class="tour-info">
+            <h3>Naran</h3>
+            <p>PAKISTAN</p>
+          </div>
+        </div>
+        <div class="tour-card large">
+          <img src="images/chitral.webp" alt="Chitral, Pakistan" />
+          <div class="tour-info">
+            <h3>Chitral</h3>
+            <p>PAKISTAN</p>
+          </div>
+        </div>
+        <div class="tour-card large">
+          <img src="images/swat.jpeg" alt="Swat Valley, Pakistan" />
+          <div class="tour-info">
+            <h3>Swat Valley</h3>
+            <p>PAKISTAN</p>
+          </div>
+        </div>
+        <div class="tour-card large">
+          <img src="images/neelum.webp" alt="Neelum Valley, Pakistan" />
+          <div class="tour-info">
+            <h3>Neelum Valley</h3>
+            <p>PAKISTAN</p>
+          </div>
+        </div>
+        <div class="tour-card large">
+          <img src="images/fairy-meadows.webp" alt="Fairy Meadows, Pakistan" />
+          <div class="tour-info">
+            <h3>Fairy Meadows</h3>
+            <p>PAKISTAN</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="gallery-section">
+      <span class="tag">Gallery</span>
+      <h2>Visit our customers tour gallery</h2>
+      <div class="gallery-grid">
+        <div class="gallery-item">
+          <img src="images/maldive.jpg" alt="Gallery image" />
+        </div>
+        <div class="gallery-item">
+          <img src="images/tourist1.png" alt="Gallery image" />
+        </div>
+        <div class="gallery-item">
+          <img src="images/beach.webp" alt="Gallery image" />
+        </div>
+        <div class="gallery-item">
+          <img src="images/tourist4.webp" alt="Gallery image" />
+        </div>
+        <div class="gallery-item">
+          <img src="images/tourist2.webp" alt="Gallery image" />
+        </div>
+        <div class="gallery-item">
+          <img src="images/tourist3.webp" alt="Gallery image" />
+        </div>
+        <div class="gallery-item">
+          <img src="images/tourist5.jpg" alt="Gallery image" />
+        </div>
+      </div>
+    </section>
+    <section class="subscribe-section">
+      <div class="subscribe-container">
+        <div class="subscribe-content">
+          <h2>Subscribe now to get useful traveling information</h2>
+          <form action="/subscribe" method="post" class="input-group">
+            <input
+              type="email"
+              name="email"
+              id="email-input"
+              placeholder="Enter your email"
+              class="email-input"
+            />
+            <button type="submit" class="subscribe-btn">Subscribe</button>
+          </form>
+          <p>
+            Join our newsletter to receive the latest travel updates, tips, and
+            deals directly in your inbox.
+          </p>
+        </div>
+        <div class="subscribe-image-container">
+          <img
+            src="images/full-length-vertical-shot-happy-upbeat-african-american-man-with-luggage-holding-passport-with-two-flight-tickets-smiling-amused-flying-abroad-travel-vacation-standing-orange-background.png"
+            alt="Happy traveler"
+            class="traveler-image"
+          />
+        </div>
+      </div>
+    </section>
+    <footer>
+      <div class="footer-container">
+        <div class="footer-brand">
+          <img
+            src="images/Travel Influencer Vlogger Logo in Blue Green Brown Organic Illustration Style (1).png"
+            alt="Streetly Logo"
+            class="brand-logo"
+          />
+          <span class="brand-name">STREETLY</span>
+          <p class="brand-description">
+            We capture the essence of destinations, from bustling city streets
+            to quiet alleyways, helping you discover the world one step at a
+            time.
+          </p>
+          <p class="copyright">© 2025 Streetly. All Reserved</p>
+        </div>
+        <div class="footer-links-group">
+          <h3>Discover</h3>
+          <ul>
+            <li><a href="#intro">Home</a></li>
+            <li><a href="#services">Services</a></li>
+            <li><a href="#gallery">Gallery</a></li>
+          </ul>
+        </div>
+      </div>
+    </footer>
+    <script src="map.js"></script>
+  </body>
+</html>
