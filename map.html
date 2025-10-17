@@ -1049,17 +1049,60 @@ async function planTrip(){
 
       // Weather and Hotels - Auto open chatbot with data
   try{
-    // Fetch weather data
-    const weatherRes=await fetch(`${API_BASE}/weather?city=${destination}`);
-    if (!weatherRes.ok) throw new Error(`Weather API error: ${weatherRes.status}`);
-    const weather=await weatherRes.json();
+    // Fetch weather data using direct OpenWeather API
+    let weather = { temperature: "N/A", condition: "Unknown" };
+    if (API_BASE) {
+      // Use backend if available (localhost)
+      const weatherRes=await fetch(`${API_BASE}/weather?city=${destination}`);
+      if (weatherRes.ok) {
+        weather=await weatherRes.json();
+      }
+    } else {
+      // Use direct OpenWeather API for external devices
+      const cityCoords = {
+        "Hunza Valley": { lat: 36.3167, lon: 74.65 },
+        "Naran": { lat: 34.9069, lon: 73.6556 },
+        "Fairy Meadows": { lat: 35.4167, lon: 74.5833 },
+        "Swat": { lat: 34.7717, lon: 72.36 },
+        "Chitral": { lat: 35.8511, lon: 71.7864 },
+        "Skardu": { lat: 35.2976, lon: 75.6337 },
+        "Neelam Valley": { lat: 34.6281, lon: 73.911 }
+      };
+      
+      const coords = cityCoords[destination];
+      if (coords) {
+        try {
+          const weatherRes = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${coords.lat}&lon=${coords.lon}&appid=cd3d503156303b838b4f9b8db21c646c&units=metric`);
+          if (weatherRes.ok) {
+            const data = await weatherRes.json();
+            weather = {
+              temperature: Math.round(data.main.temp),
+              condition: data.weather[0].description
+            };
+          }
+        } catch (e) {
+          console.log("Weather API fallback failed:", e);
+        }
+      }
+    }
 
-    // Fetch hotel data (only if budget is provided)
+    // Fetch hotel data (static fallback for external devices)
     let hotels = [];
     if (budget && budget.trim() !== '') {
-    const hotelRes=await fetch(`${API_BASE}/hotels?city=${destination}&budget=${budget}`);
-      if (!hotelRes.ok) throw new Error(`Hotel API error: ${hotelRes.status}`);
-      hotels=await hotelRes.json();
+      if (API_BASE) {
+        // Use backend if available (localhost)
+        const hotelRes=await fetch(`${API_BASE}/hotels?city=${destination}&budget=${budget}`);
+        if (hotelRes.ok) {
+          hotels=await hotelRes.json();
+        }
+      } else {
+        // Use static hotel data for external devices
+        hotels = [
+          { name: "Mountain View Hotel", price: "PKR 8,000-12,000", rating: "4.2" },
+          { name: "Valley Resort", price: "PKR 6,000-10,000", rating: "4.0" },
+          { name: "Local Guest House", price: "PKR 3,000-5,000", rating: "3.8" }
+        ];
+      }
     }
     
     // Clear the trip summary panel
