@@ -1,0 +1,26 @@
+{
+  "name": "streetly-travel-assistant",
+  "version": "1.0.0",
+  "description": "AI-powered travel assistant for Pakistan with weather, maps, and disaster predictions",
+  "main": "Streetly 4/index.html",
+  "scripts": {
+    "build": "echo 'Static site - no build needed'",
+    "start": "echo 'Static site - no start needed'"
+  },
+  "keywords": [
+    "travel",
+    "assistant",
+    "pakistan",
+    "weather",
+    "maps",
+    "ai",
+    "disaster-prediction"
+  ],
+  "author": "Maha",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mahnouor1/streetly.git"
+  },
+  "homepage": "https://streetly.vercel.app"
+}
