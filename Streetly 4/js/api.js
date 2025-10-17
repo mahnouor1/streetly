@@ -20,8 +20,29 @@ export class APIManager {
   }
 
   async getWeather(city) {
-    // Provides a stable, static weather result to ensure the UI always works.
-    return { temperature: "22", condition: "Sunny" };
+    try {
+      // Use OpenWeather API directly
+      const cityData = this.cityCoordinates[city];
+      if (!cityData) {
+        return { temperature: "N/A", condition: "Unknown" };
+      }
+      
+      const res = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${cityData.lat}&lon=${cityData.lon}&appid=cd3d503156303b838b4f9b8db21c646c&units=metric`);
+      const data = await res.json();
+      
+      if (data.cod === 200) {
+        return {
+          temperature: Math.round(data.main.temp),
+          condition: data.weather[0].description
+        };
+      } else {
+        throw new Error(data.message || "Weather data not found");
+      }
+    } catch (err) {
+      console.error("Weather fetch failed:", err);
+      // Fallback to static data if API fails
+      return { temperature: "22", condition: "Sunny" };
+    }
   }
 
   getCityInfo(city) {

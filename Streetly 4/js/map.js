@@ -34,26 +34,48 @@ function initMap() {
 // Fetch weather by city name
 async function getWeather(city) {
   try {
-    const res = await fetch(`${CONFIG.API_BASE_URL}/weather?city=${city}`);
+    // Use OpenWeather API directly
+    const res = await fetch(`${CONFIG.OPENWEATHER_BASE_URL}/weather?q=${city}&appid=${CONFIG.OPENWEATHER_API_KEY}&units=metric`);
     const data = await res.json();
-    console.log("Weather data:", data);
-    alert(`🌤 Weather in ${city}: ${data.temp}°C, ${data.condition}`);
-    return data;
+    
+    if (data.cod === 200) {
+      const weatherData = {
+        city: data.name,
+        temp: Math.round(data.main.temp),
+        condition: data.weather[0].description
+      };
+      console.log("Weather data:", weatherData);
+      alert(`🌤 Weather in ${city}: ${weatherData.temp}°C, ${weatherData.condition}`);
+      return weatherData;
+    } else {
+      throw new Error(data.message || "Weather data not found");
+    }
   } catch (err) {
     console.error("Weather fetch failed:", err);
     alert("❌ Failed to fetch weather data.");
+    return { city: city, temp: "N/A", condition: "Unknown" };
   }
 }
 
 // Fetch weather by coordinates
 async function getWeatherByCoords(lat, lon) {
   try {
-    const res = await fetch(`${CONFIG.API_BASE_URL}/weather?lat=${lat}&lon=${lon}`);
+    // Use OpenWeather API directly
+    const res = await fetch(`${CONFIG.OPENWEATHER_BASE_URL}/weather?lat=${lat}&lon=${lon}&appid=${CONFIG.OPENWEATHER_API_KEY}&units=metric`);
     const data = await res.json();
-    return data;
+    
+    if (data.cod === 200) {
+      return {
+        city: data.name,
+        temp: Math.round(data.main.temp),
+        condition: data.weather[0].description
+      };
+    } else {
+      throw new Error(data.message || "Weather data not found");
+    }
   } catch (err) {
     console.error("Weather fetch failed:", err);
-    return { city: "Unknown", temp: "-", condition: "Error" };
+    return { city: "Unknown", temp: "N/A", condition: "Unknown" };
   }
 }
 
