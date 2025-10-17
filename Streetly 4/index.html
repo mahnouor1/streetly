@@ -3,285 +3,454 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Streetly - Your Local City Guide</title>
-
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Streetly</title>
+    <link rel="stylesheet" href="home.css" />
     <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+      rel="icon"
+      type="image/x-icon"
+      href="images/Travel Influencer Vlogger Logo in Blue Green Brown Organic Illustration Style (1).png "
     />
-    <link
-      rel="stylesheet"
-      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
-      crossorigin=""
-    />
-    <link rel="stylesheet" href="css/style.css" />
-    <script>
-      tailwind.config = {
-        theme: {
-          extend: {
-            colors: {
-              primary: "#3B82F6",
-              secondary: "#10B981",
-              accent: "#F59E0B",
-            },
-          },
-        },
-      };
-    </script>
+    <script
+      src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap"
+      async
+      defer
+    ></script>
   </head>
-  <body class="bg-gray-50 font-sans">
-    <header class="bg-white shadow-sm border-b">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between items-center h-16">
-          <div class="flex items-center">
-            <img
-              src="images/Travel Influencer Vlogger Logo in Blue Green Brown Organic Illustration Style (1).png"
-              alt="Streetly Logo"
-              class="h-8"
-            />
-          </div>
-          <nav class="flex space-x-6">
-            <button
-              id="chatTab"
-              class="nav-btn text-gray-500 hover:text-primary"
-              data-view="chat"
-            >
-              Chat
-            </button>
-            <button
-              id="exploreTab"
-              class="nav-btn text-gray-500 hover:text-primary"
-              data-view="explore"
-            >
-              Explore
-            </button>
-            <button
-              id="eventsTab"
-              class="nav-btn text-gray-500 hover:text-primary"
-              data-view="events"
-            >
-              Events
-            </button>
-          </nav>
-        </div>
+  <body>
+    <header class="navbar">
+      <div class="navbar__container" id="intro">
+        <img
+          src="images/Travel Influencer Vlogger Logo in Blue Green Brown Organic Illustration Style (1).png"
+          alt=""
+          class="nav__logo"
+        />
+        <nav class="navbar__menu">
+          <ul class="navbar__list">
+            <li><a href="#services" class="navbar__link">About Us</a></li>
+            <li><a href="#gallery" class="navbar__link">Explore</a></li>
+            <li>
+              <a href="#testimonial" class="navbar__link">Testimonials</a>
+            </li>
+            <li>
+              <a href="map.html" class="navbar__btn">TRY NOW</a>
+            </li>
+          </ul>
+        </nav>
       </div>
     </header>
 
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-      <div id="citySelectionScreen" class="text-center py-12 screen">
-        <div class="max-w-md mx-auto">
-          <h2 class="text-3xl font-bold text-gray-900 mb-4">
-            Where are you exploring?
-          </h2>
-          <p class="text-gray-600 mb-8">
-            Choose a city and I'll be your local guide!
-          </p>
-          <div class="relative">
-            <input
-              type="text"
-              id="cityInput"
-              placeholder="Search for a city..."
-              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent text-lg"
+    <div class="container">
+      <section class="intro-section">
+        <h1>
+          &Tab;<span class="Highlight">Streetly</span><br />
+          travel made easy
+        </h1>
+        <p>
+          StreetSmart is your AI travel buddy – find the best routes, stay safe
+          with weather alerts, and taste the city with local food picks. All in
+          one app.
+        </p>
+        <a href="map.html" class="navbar__btn a">TRY NOW</a>
+      </section>
+
+      <section class="mockups-section">
+        <div class="mockup-card">
+          <div class="phone-frame smart-routes-frame">
+            <img
+              src="images/smart-routes.png"
+              alt="Smart Routes"
+              class="mockup-image"
             />
-            <div
-              id="cityDropdown"
-              class="absolute top-full left-0 right-0 bg-white border border-gray-200 rounded-lg mt-1 shadow-lg hidden z-10"
-            ></div>
-          </div>
-          <div class="mt-8 grid grid-cols-2 gap-4">
-            <button
-              class="popular-city bg-primary text-white px-6 py-3 rounded-lg hover:bg-blue-600 transition-colors"
-              data-city="Hunza Valley"
-            >
-              🏔️ Hunza Valley
-            </button>
-            <button
-              class="popular-city bg-primary text-white px-6 py-3 rounded-lg hover:bg-blue-600 transition-colors"
-              data-city="Skardu"
-            >
-              🏞️ Skardu
-            </button>
-            <button
-              class="popular-city bg-primary text-white px-6 py-3 rounded-lg hover:bg-blue-600 transition-colors"
-              data-city="Naran"
-            >
-              🌲 Naran
-            </button>
-            <button
-              class="popular-city bg-primary text-white px-6 py-3 rounded-lg hover:bg-blue-600 transition-colors"
-              data-city="Chitral"
-            >
-              🏰 Chitral
-            </button>
-            <button
-              class="popular-city bg-primary text-white px-6 py-3 rounded-lg hover:bg-blue-600 transition-colors"
-              data-city="Swat Valley"
-            >
-              🏞️ Swat Valley
-            </button>
-            <button
-              class="popular-city bg-primary text-white px-6 py-3 rounded-lg hover:bg-blue-600 transition-colors"
-              data-city="Neelum Valley"
-            >
-              🏞️ Neelum Valley
-            </button>
-            <button
-              class="popular-city bg-primary text-white px-6 py-3 rounded-lg hover:bg-blue-600 transition-colors"
-              data-city="Fairy Meadows"
-            >
-              🏞️ Fairy Meadows
-            </button>
           </div>
         </div>
-      </div>
-
-      <div id="chatInterface" class="hidden screen">
-        <div
-          class="grid grid-cols-1 lg:grid-cols-3 gap-6 h-[calc(100vh-200px)]"
-        >
-          <div
-            class="lg-col-span-2 bg-white rounded-lg shadow-sm border flex flex-col"
-          >
-            <div class="bg-primary text-white px-6 py-4 rounded-t-lg">
-              <div class="flex items-center justify-between">
-                <div>
-                  <h3 class="text-lg font-semibold">Your Local Guide</h3>
-                  <p id="currentCity" class="text-blue-100 text-sm"></p>
-                </div>
-                <button
-                  id="changeCityBtn"
-                  class="text-blue-100 hover:text-white text-sm underline"
-                >
-                  Change City
-                </button>
-              </div>
-            </div>
-            <div
-              id="chatMessages"
-              class="flex-1 overflow-y-auto p-6 space-y-4"
-            ></div>
-            <div class="border-t p-4">
-              <div class="flex space-x-3">
-                <input
-                  type="text"
-                  id="messageInput"
-                  placeholder="Ask me about restaurants, attractions, local tips..."
-                  class="flex-1 border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-primary focus:border-transparent"
-                />
-                <button
-                  id="sendButton"
-                  class="bg-primary text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition-colors"
-                >
-                  Send
-                </button>
-              </div>
-              <div class="flex flex-wrap gap-2 mt-3">
-                <button
-                  class="quick-action bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm hover:bg-gray-200"
-                >
-                  🍕 Best restaurants
-                </button>
-                <button
-                  class="quick-action bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm hover:bg-gray-200"
-                >
-                  🎭 Things to do
-                </button>
-                <button
-                  class="quick-action bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm hover:bg-gray-200"
-                >
-                  🚇 Getting around
-                </button>
-                <button
-                  class="quick-action bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm hover:bg-gray-200"
-                >
-                  💎 Hidden gems
-                </button>
-              </div>
-            </div>
-          </div>
-          <div class="space-y-6">
-            <div class="bg-white rounded-lg shadow-sm border p-6">
-              <h4 class="font-semibold text-gray-900 mb-3">Current Weather</h4>
-              <div id="weatherInfo" class="text-center">
-                <div id="weather-icon" class="text-3xl mb-2">☀️</div>
-                <div id="weather-temp" class="text-2xl font-bold text-gray-900">
-                  --°C
-                </div>
-                <div id="weather-condition" class="text-gray-600">---</div>
-              </div>
-            </div>
-            <div class="bg-white rounded-lg shadow-sm border p-6">
-              <h4 class="font-semibold text-gray-900 mb-3">City Info</h4>
-              <div class="space-y-2 text-sm">
-                <div class="flex justify-between">
-                  <span class="text-gray-600">Local Time:</span>
-                  <span id="localTime" class="font-medium">--:-- --</span>
-                </div>
-                <div class="flex justify-between">
-                  <span class="text-gray-600">Population:</span>
-                  <span id="population" class="font-medium">---</span>
-                </div>
-                <div class="flex justify-between">
-                  <span class="text-gray-600">Language:</span>
-                  <span id="language" class="font-medium">---</span>
-                </div>
-              </div>
-            </div>
-            <div class="bg-white rounded-lg shadow-sm border p-6">
-              <h4 class="font-semibold text-gray-900 mb-3">Trending Now</h4>
-              <div id="trendingNowContainer" class="space-y-2"></div>
-            </div>
+        <div class="mockup-card">
+          <div class="phone-frame weather-alert-frame">
+            <img
+              src="images/weather-alert.png"
+              alt="Weather Alert"
+              class="mockup-image"
+            />
           </div>
         </div>
-      </div>
-
-      <div id="exploreInterface" class="hidden screen">
-        <div class="text-center mb-4">
-          <h2 id="mapCityTitle" class="text-3xl font-bold text-gray-800"></h2>
+        <div class="mockup-card">
+          <div class="phone-frame food-picks-frame">
+            <img
+              src="images/food-picks.png"
+              alt="Food Picks"
+              class="mockup-image"
+            />
+          </div>
         </div>
-        <div
-          class="relative w-full h-[calc(100vh-250px)] rounded-lg overflow-hidden shadow-lg mb-6"
-        >
-          <div id="map" class="interactive-map w-full h-full rounded-lg"></div>
-        </div>
-      </div>
-
-      <div id="eventsInterface" class="events-interface hidden screen">
-        <h2 class="events-page-title text-2xl font-bold text-gray-900 mb-6">
-          Local Events
-        </h2>
-        <div
-          id="eventsList"
-          class="events-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-        ></div>
-      </div>
-    </main>
-
-    <div
-      id="loadingSpinner"
-      class="loading-overlay fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50"
-    >
-      <div
-        class="loading-content bg-white rounded-lg p-6 flex items-center space-x-3"
-      >
-        <div
-          class="loading-spinner animate-spin rounded-full h-6 w-6 border-b-2 border-primary"
-        ></div>
-        <span class="loading-text">Getting local insights...</span>
-      </div>
+      </section>
     </div>
+    <section class="services-section" id="services">
+      <div class="services-header">
+        <h1>We offer our best services</h1>
+      </div>
+      <div class="services-container">
+        <div class="service-card">
+          <div class="icon-circle">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="feather feather-cloud-sun"
+            >
+              <path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2z"></path>
+              <path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8z"></path>
+            </svg>
+          </div>
+          <h2>Routes</h2>
+          <p>
+            Find the most efficient and scenic paths to your destination with
+            our smart routing system, designed for a smooth journey.
+          </p>
+        </div>
+        <div class="service-card">
+          <div class="icon-circle">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="feather feather-zap"
+            >
+              <path d="M13 2L3 14h9l-1 8L21 10h-9L13 2z"></path>
+            </svg>
+          </div>
+          <h2><strong>Disaster Alert!</strong></h2>
+          <p>
+            Stay one step ahead with real-time disaster alerts and forecasts,
+            ensuring you are always prepared for what's coming.
+          </p>
+        </div>
+        <div class="service-card">
+          <div class="icon-circle">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="feather feather-shopping-bag"
+            >
+              <path
+                d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"
+              ></path>
+              <line x1="3" y1="6" x2="21" y2="6"></line>
+              <path d="M16 10a4 4 0 0 1-8 0"></path>
+            </svg>
+          </div>
+          <h2>AI Companion</h2>
+          <p>
+            Your intelligent travel assistant that provides personalized
+            recommendations and guidance, making every trip a smooth adventure.
+          </p>
+        </div>
+        <div class="service-card">
+          <div class="icon-circle">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="feather feather-shield"
+            >
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+            </svg>
+          </div>
+          <h2>SOS Dedication</h2>
+          <p>
+            Emergency assistance and safety features to ensure your security
+            and peace of mind during your travels.
+          </p>
+        </div>
+      </div>
+    </section>
+    <section class="tours-section" id="gallery">
+      <span class="tag">Explore</span>
+      <h2>Our featured tours</h2>
+      <div class="search-container">
+        <input
+          type="text"
+          id="destination-input"
+          placeholder="Enter a destination"
+        />
+        <button id="search-button">Search</button>
+      </div>
+      <div id="map"></div>
+      <div class="tours-grid">
+        <div class="tour-card large">
+          <img src="images/hunza.jpeg" alt="Hunza Valley, Pakistan" />
+          <div class="tour-info">
+            <h3>Hunza Valley</h3>
+            <p>PAKISTAN</p>
+          </div>
+          <div class="map-container">
+            <iframe
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3324.932943239462!2d74.3587!3d31.5204!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x391904d4a6a5e9a3%3A0xedc171c1eb3b3b1!2sLahore%2C%20Punjab%2C%20Pakistan!5e0!3m2!1sen!2s!4v1678886400000!5m2!1sen!2s"
+              width="100%"
+              height="200"
+              style="border: 0"
+              allowfullscreen=""
+              loading="lazy"
+            ></iframe>
+          </div>
+        </div>
+        <div class="tour-card large">
+          <img src="images/skardu.jpeg" alt="Skardu, Pakistan" />
+          <div class="tour-info">
+            <h3>Skardu</h3>
+            <p>PAKISTAN</p>
+          </div>
+          <div class="map-container">
+            <iframe
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3324.932943239462!2d74.3587!3d31.5204!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x391904d4a6a5e9a3%3A0xedc171c1eb3b3b1!2sLahore%2C%20Punjab%2C%20Pakistan!5e0!3m2!1sen!2s!4v1678886400000!5m2!1sen!2s"
+              width="100%"
+              height="200"
+              style="border: 0"
+              allowfullscreen=""
+              loading="lazy"
+            ></iframe>
+          </div>
+        </div>
+        <div class="tour-card extra-large">
+          <img src="images/naran.jpeg" alt="Naran, Pakistan" />
+          <div class="tour-info">
+            <h3>Naran</h3>
+            <p>PAKISTAN</p>
+          </div>
+          <div class="map-container">
+            <iframe
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3324.932943239462!2d74.3587!3d31.5204!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x391904d4a6a5e9a3%3A0xedc171c1eb3b3b1!2sLahore%2C%20Punjab%2C%20Pakistan!5e0!3m2!1sen!2s!4v1678886400000!5m2!1sen!2s"
+              width="100%"
+              height="200"
+              style="border: 0"
+              allowfullscreen=""
+              loading="lazy"
+            ></iframe>
+          </div>
+        </div>
+        <div class="tour-card large">
+          <img src="images/chitral.webp" alt="Chitral, Pakistan" />
+          <div class="tour-info">
+            <h3>Chitral</h3>
+            <p>PAKISTAN</p>
+          </div>
+          <div class="map-container">
+            <iframe
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3324.932943239462!2d74.3587!3d31.5204!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x391904d4a6a5e9a3%3A0xedc171c1eb3b3b1!2sLahore%2C%20Punjab%2C%20Pakistan!5e0!3m2!1sen!2s!4v1678886400000!5m2!1sen!2s"
+              width="100%"
+              height="200"
+              style="border: 0"
+              allowfullscreen=""
+              loading="lazy"
+            ></iframe>
+          </div>
+        </div>
+        <div class="tour-card large">
+          <img src="images/swat.jpeg" alt="Swat Valley, Pakistan" />
+          <div class="tour-info">
+            <h3>Swat Valley</h3>
+            <p>PAKISTAN</p>
+          </div>
+          <div class="map-container">
+            <iframe
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3324.932943239462!2d74.3587!3d31.5204!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x391904d4a6a5e9a3%3A0xedc171c1eb3b3b1!2sLahore%2C%20Punjab%2C%20Pakistan!5e0!3m2!1sen!2s!4v1678886400000!5m2!1sen!2s"
+              width="100%"
+              height="200"
+              style="border: 0"
+              allowfullscreen=""
+              loading="lazy"
+            ></iframe>
+          </div>
+        </div>
+        <div class="tour-card large">
+          <img src="images/neelum.webp" alt="Neelum Valley, Pakistan" />
+          <div class="tour-info">
+            <h3>Neelum Valley</h3>
+            <p>PAKISTAN</p>
+          </div>
+          <div class="map-container">
+            <iframe
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3324.932943239462!2d74.3587!3d31.5204!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x391904d4a6a5e9a3%3A0xedc171c1eb3b3b1!2sLahore%2C%20Punjab%2C%20Pakistan!5e0!3m2!1sen!2s!4v1678886400000!5m2!1sen!2s"
+              width="100%"
+              height="200"
+              style="border: 0"
+              allowfullscreen=""
+              loading="lazy"
+            ></iframe>
+          </div>
+        </div>
+        <div class="tour-card large">
+          <img src="images/fairy-meadows.webp" alt="Fairy Meadows, Pakistan" />
+          <div class="tour-info">
+            <h3>Fairy Meadows</h3>
+            <p>PAKISTAN</p>
+          </div>
+          <div class="map-container">
+            <iframe
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3324.932943239462!2d74.3587!3d31.5204!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x391904d4a6a5e9a3%3A0xedc171c1eb3b3b1!2sLahore%2C%20Punjab%2C%20Pakistan!5e0!3m2!1sen!2s!4v1678886400000!5m2!1sen!2s"
+              width="100%"
+              height="200"
+              style="border: 0"
+              allowfullscreen=""
+              loading="lazy"
+            ></iframe>
+          </div>
+        </div>
+      </div>
+    </section>
 
-    <script
-      src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-      integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
-      crossorigin=""
-    ></script>
-    <script
-      type="module"
-      src="https://unpkg.com/@google/generative-ai"
-    ></script>
-    <script type="module" src="js/app.js"></script>
+    <section class="gallery-section">
+      <span class="tag">Gallery</span>
+      <h2>Visit our customers tour gallery</h2>
+      <div class="gallery-grid">
+        <div class="gallery-item">
+          <img src="images/maldive.jpg" alt="Gallery image" />
+        </div>
+        <div class="gallery-item">
+          <img src="images/tourist1.png" alt="Gallery image" />
+        </div>
+        <div class="gallery-item">
+          <img src="images/beach.webp" alt="Gallery image" />
+        </div>
+        <div class="gallery-item">
+          <img src="images/tourist4.webp" alt="Gallery image" />
+        </div>
+        <div class="gallery-item">
+          <img src="images/tourist2.webp" alt="Gallery image" />
+        </div>
+        <div class="gallery-item">
+          <img src="images/tourist3.webp" alt="Gallery image" />
+        </div>
+        <div class="gallery-item">
+          <img src="images/tourist5.jpg" alt="Gallery image" />
+        </div>
+      </div>
+    </section>
+    <section class="testimonials-section" id="testimonial">
+      <span class="tag">Fans Love</span>
+      <h2>What our fans say about us</h2>
+      <div class="testimonials-container">
+        <div class="testimonial-card">
+          <p class="quote">
+            This app transformed my trip planning. From finding the best routes
+            to discovering hidden culinary gems, everything was seamless,
+            stress-free, and perfectly tailored to my interests. It’s the only
+            travel companion I’ll ever need for an adventure.
+          </p>
+          <div class="profile-info">
+            <img src="images/john.jpeg" alt="John Deep" class="profile-pic" />
+            <div class="profile-text">
+              <h4 class="profile-name">John Deep</h4>
+              <p class="profile-title">Customer</p>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card">
+          <p class="quote">
+            Our journey was absolutely unforgettable thanks to this service. We
+            discovered so many amazing places we would have missed on our own,.
+            and the local insights were truly priceless. Every single day was an
+            exciting adventure.
+          </p>
+          <div class="profile-info">
+            <img src="images/ally.webp" alt="Ally Gomez" class="profile-pic" />
+            <div class="profile-text">
+              <h4 class="profile-name">Ally Gomez</h4>
+              <p class="profile-title">Customer</p>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card">
+          <p class="quote">
+            I always feel safe and completely well-prepared with this app. The
+            real-time weather alerts and smart routing mean I can explore new
+            places with absolute confidence. It’s an essential tool for any
+            traveler seeking peace of mind.
+          </p>
+          <div class_="profile-info">
+            <img
+              src="images/tourist1.png"
+              alt="Ben Smith"
+              class="profile-pic"
+            />
+            <div class="profile-text">
+              <h4 class="profile-name">Ben Smith</h4>
+              <p class="profile-title">Customer</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="subscribe-section">
+      <div class="subscribe-container">
+        <div class="subscribe-content">
+          <h2>Subscribe now to get useful traveling information</h2>
+          <form action="/subscribe" method="post" class="input-group">
+            <input
+              type="email"
+              name="email"
+              id="email-input"
+              placeholder="Enter your email"
+              class="email-input"
+            />
+            <button type="submit" class="subscribe-btn">Subscribe</button>
+          </form>
+          <p>
+            Join our newsletter to receive the latest travel updates, tips, and
+            deals directly in your inbox.
+          </p>
+        </div>
+        <div class="subscribe-image-container">
+          <img
+            src="images/full-length-vertical-shot-happy-upbeat-african-american-man-with-luggage-holding-passport-with-two-flight-tickets-smiling-amused-flying-abroad-travel-vacation-standing-orange-background.png"
+            alt="Happy traveler"
+            class="traveler-image"
+          />
+        </div>
+      </div>
+    </section>
+    <footer>
+      <div class="footer-container">
+        <div class="footer-brand">
+          <img
+            src="images/Travel Influencer Vlogger Logo in Blue Green Brown Organic Illustration Style (1).png"
+            alt="Streetly Logo"
+            class="brand-logo"
+          />
+          <span class="brand-name">STREETLY</span>
+          <p class="brand-description">
+            We capture the essence of destinations, from bustling city streets
+            to quiet alleyways, helping you discover the world one step at a
+            time.
+          </p>
+          <p class="copyright">© 2025 Streetly. All Reserved</p>
+        </div>
+        <div class="footer-links-group">
+          <h3>Discover</h3>
+          <ul>
+            <li><a href="#intro">Home</a></li>
+            <li><a href="#services">Services</a></li>
+            <li><a href="#gallery">Gallery</a></li>
+            <li><a href="#testimonial">Testimonials</a></li>
+          </ul>
+        </div>
+      </div>
+    </footer>
+    <script src="map.js"></script>
   </body>
 </html>
