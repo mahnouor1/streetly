@@ -1,0 +1,32 @@
+# Backend files (not needed for static frontend)
+backend/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.pkl
+*.csv
+
+# Development files
+.git/
+.gitignore
+README.md
+firebase.json
+.firebaserc
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
