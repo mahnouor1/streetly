@@ -572,7 +572,6 @@
 
   <script>
 const API_BASE = window.location.hostname === 'localhost' ? "http://127.0.0.1:8080" : null;
-const OPENWEATHER_API_KEY = "cd3d503156303b838b4f9b8db21c646c";
     let map, directionsService, directionsRenderer;
 let currentRoutes = null;
 let selectedRouteIndex = 0;
@@ -991,60 +990,6 @@ function shareDirections() {
   }
 }
 
-// Function to generate hotel recommendations based on destination and budget
-function generateHotelRecommendations(destination, budget) {
-  const budgetNum = parseInt(budget);
-  
-  // Sample hotel data for Northern Pakistan destinations
-  const hotelData = {
-    "Hunza Valley": [
-      { name: "Hunza Serena Inn", price: 8000, rating: 4.5, amenities: ["WiFi", "Restaurant", "Mountain View"] },
-      { name: "Eagle's Nest Hotel", price: 12000, rating: 4.8, amenities: ["WiFi", "Restaurant", "Spa", "Mountain View"] },
-      { name: "Hunza View Hotel", price: 6000, rating: 4.2, amenities: ["WiFi", "Restaurant"] }
-    ],
-    "Skardu": [
-      { name: "Shangrila Resort", price: 15000, rating: 4.7, amenities: ["WiFi", "Restaurant", "Lake View", "Spa"] },
-      { name: "Skardu Continental", price: 9000, rating: 4.3, amenities: ["WiFi", "Restaurant", "Parking"] },
-      { name: "K2 Resort", price: 11000, rating: 4.4, amenities: ["WiFi", "Restaurant", "Mountain View"] }
-    ],
-    "Naran": [
-      { name: "Naran Valley Hotel", price: 7000, rating: 4.1, amenities: ["WiFi", "Restaurant", "Mountain View"] },
-      { name: "Saif-ul-Mulook Hotel", price: 5000, rating: 3.9, amenities: ["WiFi", "Restaurant"] },
-      { name: "Naran Heights Resort", price: 10000, rating: 4.3, amenities: ["WiFi", "Restaurant", "Spa", "Mountain View"] }
-    ],
-    "Chitral": [
-      { name: "Chitral Inn", price: 6000, rating: 4.0, amenities: ["WiFi", "Restaurant", "Parking"] },
-      { name: "Mountain View Hotel", price: 8000, rating: 4.2, amenities: ["WiFi", "Restaurant", "Mountain View"] }
-    ],
-    "Swat Valley": [
-      { name: "Swat Serena Hotel", price: 12000, rating: 4.6, amenities: ["WiFi", "Restaurant", "Spa", "Garden"] },
-      { name: "Swat Continental", price: 8000, rating: 4.2, amenities: ["WiFi", "Restaurant", "Parking"] }
-    ],
-    "Neelum Valley": [
-      { name: "Neelum View Hotel", price: 5000, rating: 3.8, amenities: ["WiFi", "Restaurant"] },
-      { name: "Kashmir Heights", price: 7000, rating: 4.1, amenities: ["WiFi", "Restaurant", "Mountain View"] }
-    ],
-    "Fairy Meadows": [
-      { name: "Fairy Meadows Resort", price: 4000, rating: 3.9, amenities: ["Restaurant", "Mountain View"] },
-      { name: "Nanga Parbat Base Camp", price: 3000, rating: 3.7, amenities: ["Restaurant"] }
-    ]
-  };
-  
-  const destinationHotels = hotelData[destination] || [
-    { name: "Local Guest House", price: 5000, rating: 4.0, amenities: ["WiFi", "Restaurant"] },
-    { name: "Mountain Lodge", price: 8000, rating: 4.2, amenities: ["WiFi", "Restaurant", "Mountain View"] },
-    { name: "Valley Resort", price: 10000, rating: 4.3, amenities: ["WiFi", "Restaurant", "Spa"] }
-  ];
-  
-  // Filter hotels within budget range (±30%)
-  const minBudget = budgetNum * 0.7;
-  const maxBudget = budgetNum * 1.3;
-  
-  return destinationHotels.filter(hotel => 
-    hotel.price >= minBudget && hotel.price <= maxBudget
-  ).slice(0, 3); // Return top 3 matches
-}
-
 async function planTrip(){
       const origin = document.getElementById('origin').value;
       const destination = document.getElementById('destination').value;
@@ -1104,36 +1049,17 @@ async function planTrip(){
 
       // Weather and Hotels - Auto open chatbot with data
   try{
-    // Fetch weather data using OpenWeather API directly
-    let weather = null;
-    if (API_BASE) {
-      // Use local backend if available
-      const weatherRes = await fetch(`${API_BASE}/weather?city=${destination}`);
-      if (weatherRes.ok) {
-        weather = await weatherRes.json();
-      }
-    }
-    
-    // If no local backend or it failed, use OpenWeather API directly
-    if (!weather) {
-      const weatherRes = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${destination}&appid=${OPENWEATHER_API_KEY}&units=metric`);
-      if (weatherRes.ok) {
-        const data = await weatherRes.json();
-        weather = {
-          city: data.name,
-          temp: Math.round(data.main.temp),
-          condition: data.weather[0].description,
-          humidity: data.main.humidity,
-          wind: data.wind.speed
-        };
-      }
-    }
+    // Fetch weather data
+    const weatherRes=await fetch(`${API_BASE}/weather?city=${destination}`);
+    if (!weatherRes.ok) throw new Error(`Weather API error: ${weatherRes.status}`);
+    const weather=await weatherRes.json();
 
-    // Generate fallback hotel data
+    // Fetch hotel data (only if budget is provided)
     let hotels = [];
     if (budget && budget.trim() !== '') {
-      // Generate sample hotel recommendations based on destination and budget
-      hotels = generateHotelRecommendations(destination, budget);
+    const hotelRes=await fetch(`${API_BASE}/hotels?city=${destination}&budget=${budget}`);
+      if (!hotelRes.ok) throw new Error(`Hotel API error: ${hotelRes.status}`);
+      hotels=await hotelRes.json();
     }
     
     // Clear the trip summary panel
@@ -1164,39 +1090,6 @@ function toggleChatbot() {
   }
 }
 
-// Function to generate fallback responses when backend is not available
-function generateFallbackResponse(message) {
-  const lowerMessage = message.toLowerCase();
-  
-  // Weather-related responses
-  if (lowerMessage.includes('weather') || lowerMessage.includes('temperature')) {
-    return "🌤️ For real-time weather information, please use the 'Plan My Trip' feature above. I can provide weather data for destinations like Hunza Valley, Skardu, Naran, and other Northern Pakistan locations.";
-  }
-  
-  // Hotel-related responses
-  if (lowerMessage.includes('hotel') || lowerMessage.includes('accommodation') || lowerMessage.includes('stay')) {
-    return "🏨 I can recommend hotels based on your budget! Please use the 'Plan My Trip' feature above and enter your budget to get personalized hotel recommendations for your destination.";
-  }
-  
-  // Route-related responses
-  if (lowerMessage.includes('route') || lowerMessage.includes('way') || lowerMessage.includes('directions')) {
-    return "🛣️ For route planning and directions, please use the map above. You can enter your origin and destination to get detailed directions and route information.";
-  }
-  
-  // General travel information
-  if (lowerMessage.includes('hunza') || lowerMessage.includes('skardu') || lowerMessage.includes('naran')) {
-    return "🏔️ Great choice! Northern Pakistan offers amazing destinations. Use the 'Plan My Trip' feature above to get weather information and hotel recommendations for your chosen destination.";
-  }
-  
-  // Emergency/SOS responses
-  if (lowerMessage.includes('emergency') || lowerMessage.includes('help') || lowerMessage.includes('sos')) {
-    return "🚨 For emergencies, please contact local authorities immediately. You can also use the 'Emergency SOS' button on the map for location sharing and emergency assistance.";
-  }
-  
-  // Default response
-  return "I'm here to help with your travel planning! Please use the 'Plan My Trip' feature above to get weather and hotel information, or ask me about specific destinations in Northern Pakistan.";
-}
-
 function sendMessage() {
   const input = document.getElementById('chatbotInput');
   const message = input.value.trim();
@@ -1207,29 +1100,22 @@ function sendMessage() {
   appendMessage('user', message);
   input.value = '';
   
-  // Send to backend if available, otherwise use fallback response
-  if (API_BASE) {
-    fetch(`${API_BASE}/chat`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ message: message })
-    })
-    .then(response => response.json())
-    .then(data => {
-      appendMessage('bot', data.reply);
-    })
-    .catch(error => {
-      console.error('Error:', error);
-      appendMessage('bot', generateFallbackResponse(message));
-    });
-  } else {
-    // Use fallback response when no backend is available
-    setTimeout(() => {
-      appendMessage('bot', generateFallbackResponse(message));
-    }, 1000);
-  }
+  // Send to backend
+  fetch(`${API_BASE}/chat`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ message: message })
+  })
+  .then(response => response.json())
+  .then(data => {
+    appendMessage('bot', data.reply);
+  })
+  .catch(error => {
+    console.error('Error:', error);
+    appendMessage('bot', 'Sorry, I\'m having trouble connecting right now. Please try again.');
+  });
 }
 
 function appendMessage(type, content) {
@@ -1547,7 +1433,7 @@ let currentInfoWindow = null;
 async function fetchMLPredictions() {
   try {
     console.log('🔄 Fetching ML predictions...');
-    const response = await fetch('http://127.0.0.1:8081/ml-predictions');
+    const response = await fetch(window.location.hostname === 'localhost' ? 'http://127.0.0.1:8081/ml-predictions' : null);
     
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
@@ -2009,7 +1895,7 @@ window.testFakeMarkers = function() {
 window.testRealData = async function() {
   console.log('🧪 Testing real API data...');
   try {
-    const response = await fetch('http://127.0.0.1:8081/ml-predictions');
+    const response = await fetch(window.location.hostname === 'localhost' ? 'http://127.0.0.1:8081/ml-predictions' : null);
     const data = await response.json();
     console.log('📊 Raw API data:', data);
     
