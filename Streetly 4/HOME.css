@@ -864,7 +864,7 @@ footer {
 .tour-card:hover .map-container {
   opacity: 1;
 }
-
 .map-container iframe {
   border-radius: 15px;
 }
+
