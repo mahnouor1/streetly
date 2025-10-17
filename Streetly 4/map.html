@@ -800,6 +800,11 @@ function selectSuggestion(location) {
   
   // Initialize autocomplete functionality
   initAutocomplete();
+  
+  // Initialize ML predictions system
+  if (typeof startMLPredictions === 'function') {
+    startMLPredictions();
+  }
 }
 
 function showRouteTab(tab) {
@@ -1345,33 +1350,40 @@ document.addEventListener('DOMContentLoaded', function() {
 // Disaster Control Functions
 function handlePredictDisaster() {
   console.log('🔴 Predict Disaster clicked');
-  const btn = document.getElementById('predictDisasterBtn');
   
-  // Prevent multiple clicks
-  if (btn.disabled) {
-    console.log('⚠️ Button already processing, ignoring click');
-    return;
+  // Use the ML function from map_ml.js if available
+  if (typeof window.handlePredictDisaster === 'function') {
+    window.handlePredictDisaster();
+  } else {
+    // Fallback to original function
+    const btn = document.getElementById('predictDisasterBtn');
+    
+    // Prevent multiple clicks
+    if (btn.disabled) {
+      console.log('⚠️ Button already processing, ignoring click');
+      return;
+    }
+    
+    // Add visual feedback
+    btn.style.opacity = '0.7';
+    btn.textContent = 'Loading...';
+    btn.disabled = true;
+    
+    fetchMLPredictions()
+      .then(() => {
+        console.log('✅ Predictions loaded successfully');
+      })
+      .catch((error) => {
+        console.error('❌ Error loading predictions:', error);
+        alert('Failed to load predictions. Please try again.');
+      })
+      .finally(() => {
+        // Reset button
+        btn.style.opacity = '1';
+        btn.textContent = 'Predict Disaster';
+        btn.disabled = false;
+      });
   }
-  
-  // Add visual feedback
-  btn.style.opacity = '0.7';
-  btn.textContent = 'Loading...';
-  btn.disabled = true;
-  
-  fetchMLPredictions()
-    .then(() => {
-      console.log('✅ Predictions loaded successfully');
-    })
-    .catch((error) => {
-      console.error('❌ Error loading predictions:', error);
-      alert('Failed to load predictions. Please try again.');
-    })
-    .finally(() => {
-      // Reset button
-      btn.style.opacity = '1';
-      btn.textContent = 'Predict Disaster';
-      btn.disabled = false;
-    });
 }
 
 function handleReportDisaster() {
@@ -1904,6 +1916,9 @@ window.testRealData = async function() {
   }
 };
   </script>
+
+<!-- ML Predictions Integration -->
+<script src="js/map_ml.js"></script>
 
 <script async defer
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDJvDcdmau-Jt93UhPI7xjy-CQ0cLh-wqc&callback=initMap">
