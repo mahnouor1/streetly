@@ -1050,7 +1050,7 @@ async function planTrip(){
       // Weather and Hotels - Auto open chatbot with data
   try{
     // Fetch weather data using direct OpenWeather API
-    let weather = { temperature: "N/A", condition: "Unknown" };
+    let weather = { temp: "N/A", feels_like: "N/A", condition: "Unknown", humidity: "N/A", wind_speed: "N/A" };
     if (API_BASE) {
       // Use backend if available (localhost)
       const weatherRes=await fetch(`${API_BASE}/weather?city=${destination}`);
@@ -1076,8 +1076,11 @@ async function planTrip(){
           if (weatherRes.ok) {
             const data = await weatherRes.json();
             weather = {
-              temperature: Math.round(data.main.temp),
-              condition: data.weather[0].description
+              temp: Math.round(data.main.temp),
+              feels_like: Math.round(data.main.feels_like),
+              condition: data.weather[0].description,
+              humidity: data.main.humidity,
+              wind_speed: data.wind.speed
             };
           }
         } catch (e) {
