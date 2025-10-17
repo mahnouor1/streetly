@@ -1,0 +1,88 @@
+/* General Body Styles */
+body {
+  font-family: "Inter", sans-serif;
+  background-color: #f8f9fa;
+  color: #333;
+}
+
+/* Header & Navigation */
+.nav-btn {
+  position: relative;
+  padding-bottom: 4px;
+  font-weight: 500;
+  transition: color 0.3s;
+}
+
+.nav-btn.text-primary::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background-color: #3b82f6; /* primary color */
+}
+
+/* Main container */
+.main-container {
+  display: flex;
+  gap: 1.5rem;
+  height: calc(100vh - 80px); /* Adjust based on header height */
+}
+
+/* Chat Interface */
+#chatInterface {
+  display: grid;
+}
+
+#chatMessages {
+  scrollbar-width: thin;
+  scrollbar-color: #a0aec0 #e2e8f0;
+}
+
+#chatMessages::-webkit-scrollbar {
+  width: 8px;
+}
+
+#chatMessages::-webkit-scrollbar-track {
+  background: #e2e8f0;
+}
+
+#chatMessages::-webkit-scrollbar-thumb {
+  background-color: #a0aec0;
+  border-radius: 10px;
+  border: 3px solid #e2e8f0;
+}
+
+.quick-action {
+  transition: background-color 0.2s;
+}
+
+/* Events Interface */
+.events-interface {
+  padding: 1.5rem;
+}
+
+.event-card {
+  background: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  overflow: hidden;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.event-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+/* Map */
+.interactive-map {
+  border-radius: 0.5rem;
+}
+
+/* Loading Spinner */
+.loading-overlay {
+  z-index: 1000;
+}

@@ -1,0 +1,190 @@
+:root {
+    --primary-color: #3B82F6;
+    --secondary-color: #10B981;
+    --accent-color: #F59E0B;
+    --text-color: #1F2937;
+    --bg-color: #F9FAFB;
+    --card-bg: #FFFFFF;
+}
+
+[data-theme="Skardu"] {
+    --primary-color: #2E8B57; 
+    --secondary-color: #66CDAA;
+    --accent-color: #8FBC8F;
+}
+
+[data-theme="Naran"] {
+    --primary-color: #4682B4;
+    --secondary-color: #87CEEB;
+    --accent-color: #ADD8E6;
+}
+
+[data-theme="Chitral"] {
+    --primary-color: #A0522D;
+    --secondary-color: #D2691E;
+    --accent-color: #F4A460;
+}
+
+[data-theme="Swat Valley"] {
+    --primary-color: #008080;
+    --secondary-color: #20B2AA;
+    --accent-color: #48D1CC;
+}
+
+[data-theme="Neelum Valley"] {
+    --primary-color: #4169E1;
+    --secondary-color: #6495ED;
+    --accent-color: #87CEFA;
+}
+
+[data-theme="Fairy Meadows"] {
+    --primary-color: #228B22;
+    --secondary-color: #32CD32;
+    --accent-color: #90EE90;
+}
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+}
+
+.bg-primary {
+    background-color: var(--primary-color);
+}
+
+.text-primary {
+    color: var(--primary-color);
+}
+
+.border-primary {
+    border-color: var(--primary-color);
+}
+
+.ring-primary:focus {
+    --tw-ring-color: var(--primary-color);
+}
+
+.hover\:bg-blue-600:hover {
+    background-color: var(--primary-color);
+    opacity: 0.9;
+}
+
+.nav-btn.active {
+    color: var(--primary-color);
+    border-bottom: 2px solid var(--primary-color);
+}
+
+#chatMessages .user-message .bubble {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+#chatMessages .bot-message .bubble {
+    background-color: var(--card-bg);
+    border: 1px solid #E5E7EB;
+}
+
+.quick-action:hover {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+#sendButton {
+    background-color: var(--primary-color);
+}
+
+.popular-city {
+    background-color: var(--primary-color);
+}
+
+.city-suggestion {
+    padding: 12px 16px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.city-suggestion:hover {
+    background-color: #f0f0f0;
+}
+
+#chatMessages .message {
+    display: flex;
+    margin-bottom: 1rem;
+    animation: slideIn 0.3s ease-out forwards;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+#chatMessages .user-message {
+    justify-content: flex-end;
+}
+
+#chatMessages .avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    margin: 0 8px;
+}
+
+#chatMessages .user-message .avatar {
+    order: 2;
+}
+
+#chatMessages .bot-message .avatar {
+    order: 1;
+}
+
+#chatMessages .bubble {
+    max-width: 70%;
+    padding: 12px 16px;
+    border-radius: 20px;
+    line-height: 1.5;
+}
+
+#chatMessages .user-message .bubble {
+    border-top-right-radius: 4px;
+}
+
+#chatMessages .bot-message .bubble {
+    border-top-left-radius: 4px;
+}
+
+#chatMessages .message-time {
+    font-size: 0.75rem;
+    color: #9CA3AF;
+    margin: 4px 0;
+}
+
+.loading-dots span {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: var(--primary-color);
+    animation: bounce 1.4s infinite both;
+}
+
+.loading-dots span:nth-child(2) {
+    animation-delay: -0.32s;
+}
+
+.loading-dots span:nth-child(3) {
+    animation-delay: -0.16s;
+}
+
+@keyframes bounce {
+    0%, 80%, 100% {
+        transform: scale(0);
+    }
+    40% {
+        transform: scale(1.0);
+    }
+}

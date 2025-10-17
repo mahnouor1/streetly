@@ -1,0 +1,1912 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Streetly AI Travel Map</title>
+  <link rel="stylesheet" href="home.css" />
+  <link
+    rel="icon"
+    type="image/x-icon"
+    href="images/Travel Influencer Vlogger Logo in Blue Green Brown Organic Illustration Style (1).png"
+  />
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: #f9fafb;
+      min-height: 100vh;
+}
+.main-container {
+      display: flex;
+  gap: 20px;
+  max-width: 1400px;
+  margin: 0 auto;
+  height: 100vh;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+    .panel {
+  background: rgba(255,255,255,0.95);
+      border-radius: 16px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+      padding: 20px;
+  width: 350px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      backdrop-filter: blur(10px);
+  overflow-y: auto;
+}
+.panel h2 { 
+  text-align:center; 
+  color:#6b7280; 
+  margin:0; 
+  font-size:1rem; 
+  font-weight:400; 
+  margin-bottom:8px;
+}
+.panel label { font-weight:500; color:#374151; font-size:0.9rem; margin-bottom:2px; }
+.panel input, .panel select { padding:8px; border:1px solid #d1d5db; border-radius:8px; font-size:0.9rem; }
+.panel button {
+  background:#2563eb; color:white; border:none; padding:10px; border-radius:8px;
+  cursor:pointer; font-weight:500; transition:0.3s;
+}
+.panel button:hover { background:#1e40af; }
+#map { flex:1; height:100%; border-radius:16px; box-shadow:0 8px 32px rgba(0,0,0,0.1); overflow:hidden; }
+#routes-panel {
+  max-height:200px; overflow-y:auto; background:#f3f4f6; border-radius:8px; padding:10px; margin-top:10px;
+}
+.route-option {
+  padding:8px; margin-bottom:6px; border-radius:6px; cursor:pointer; background:#e5e7eb; transition:0.2s;
+}
+.route-option:hover { background:#dbeafe; }
+.route-option.selected { background:#dbeafe; border:2px solid #2563eb; }
+.route-option {
+  position:relative;
+}
+.route-details-btn {
+  position:absolute; right:8px; top:50%; transform:translateY(-50%);
+  width:24px; height:24px; border:none; background:#2563eb; color:white;
+  border-radius:50%; cursor:pointer; font-size:12px; display:flex;
+  align-items:center; justify-content:center; transition:0.2s;
+}
+.route-details-btn:hover { background:#1e40af; transform:translateY(-50%) scale(1.1); }
+
+/* Route Details Panel */
+#route-details-panel {
+  position:fixed; top:50%; right:-400px; width:380px; height:500px;
+  background:white; border-radius:12px 0 0 12px; box-shadow:-4px 0 16px rgba(0,0,0,0.2);
+  z-index:1000; transition:right 0.3s ease-in-out; overflow:visible;
+  transform:translateY(-50%);
+  display:flex; flex-direction:column;
+}
+#route-details-panel.slide-in { right:0; }
+.route-tabs {
+  display:flex; border-bottom:1px solid #e5e7eb;
+}
+.route-tab {
+  flex:1; padding:12px; text-align:center; cursor:pointer; background:#f9fafb;
+  border:none; font-weight:500; transition:0.2s;
+}
+.route-tab.active { background:white; color:#2563eb; border-bottom:2px solid #2563eb; }
+.route-tab:hover { background:#f3f4f6; }
+.route-content {
+  padding:10px; height:400px; overflow-y:auto; background:white;
+}
+.route-step {
+  padding:6px 0; border-bottom:1px solid #f3f4f6; display:flex; align-items:flex-start; gap:8px;
+}
+.route-step:last-child { border-bottom:none; }
+.step-icon {
+  width:20px; height:20px; background:#2563eb; border-radius:50%; 
+  display:flex; align-items:center; justify-content:center; color:white; font-size:10px; flex-shrink:0;
+}
+.step-text { flex:1; font-size:0.9rem; }
+.toll-info {
+  background:#fff3cd; border:1px solid #ffeaa7; border-radius:6px; padding:8px; margin:8px 0;
+  font-size:0.85rem; color:#856404;
+}
+.share-buttons {
+  display:flex; gap:8px; margin:10px 0;
+}
+.share-btn {
+  flex:1; padding:8px; border:1px solid #d1d5db; border-radius:6px; 
+  background:white; cursor:pointer; font-size:0.85rem; transition:0.2s;
+}
+.share-btn:hover { background:#f9fafb; }
+.panel-close-btn {
+  position:absolute; top:10px; right:10px; width:30px; height:30px;
+  border:none; background:#f3f4f6; border-radius:50%; cursor:pointer;
+  display:flex; align-items:center; justify-content:center; font-size:16px;
+  color:#6b7280; transition:0.2s;
+}
+.panel-close-btn:hover { background:#e5e7eb; color:#374151; }
+
+/* Autocomplete Styles */
+.autocomplete-container {
+  position: relative;
+  width: 100%;
+}
+
+.autocomplete-suggestions {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: white;
+  border: 1px solid #d1d5db;
+  border-top: none;
+  border-radius: 0 0 8px 8px;
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 1000;
+  display: none;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.autocomplete-suggestion {
+  padding: 10px 12px;
+  cursor: pointer;
+  border-bottom: 1px solid #f3f4f6;
+  font-size: 0.9rem;
+  transition: background-color 0.2s;
+}
+
+.autocomplete-suggestion:last-child {
+  border-bottom: none;
+}
+
+.autocomplete-suggestion:hover,
+.autocomplete-suggestion.highlighted {
+  background-color: #f3f4f6;
+}
+
+.autocomplete-suggestion .location-name {
+  font-weight: 500;
+  color: #374151;
+}
+
+.autocomplete-suggestion .location-type {
+  font-size: 0.8rem;
+  color: #6b7280;
+  margin-left: 4px;
+}
+    #trip-summary {
+  background:#f3f4f6; padding:10px; border-radius:8px; font-size:0.85rem; margin-top:10px; max-height:150px; overflow-y:auto;
+}
+    #info-box {
+  position:fixed; bottom:20px; left:20px; background: rgba(255,255,255,0.9);
+  padding:10px 15px; border-radius:12px; box-shadow:0 4px 10px rgba(0,0,0,0.2); font-size:14px; z-index:5;
+}
+
+/* Disaster Controls */
+.disaster-controls {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 15px;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  max-width: 400px;
+  margin-left: auto;
+  margin-right: auto;
+  position: relative;
+  z-index: 10;
+}
+
+.disaster-btn {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 14px;
+  position: relative;
+  overflow: hidden;
+  flex: 1;
+  min-width: 0;
+}
+
+.disaster-btn:active {
+  transform: translateY(1px);
+}
+
+.disaster-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.predict-disaster-btn {
+  background: #dc2626;
+  color: white;
+}
+
+.predict-disaster-btn:hover {
+  background: #b91c1c;
+  transform: translateY(-2px);
+}
+
+.report-btn {
+  background: #059669;
+  color: white;
+}
+
+.report-btn:hover {
+  background: #047857;
+  transform: translateY(-2px);
+}
+
+.map-section {
+  position: relative;
+  flex: 1;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+#map {
+  flex: 1;
+  min-height: 0;
+}
+
+/* Map Legend */
+.map-legend {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(255, 255, 255, 0.95);
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  max-width: 200px;
+}
+
+.map-legend h4 {
+  margin: 0 0 10px 0;
+  font-size: 14px;
+  color: #374151;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+  font-size: 12px;
+}
+
+.legend-icon {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 2px solid white;
+}
+
+.flood-high { background: #1e40af; }
+.flood-medium { background: #3b82f6; }
+.flood-low { background: #60a5fa; }
+.earthquake-high { background: #dc2626; }
+.earthquake-medium { background: #f59e0b; }
+.earthquake-low { background: #f97316; }
+
+/* Chatbot Styles */
+.chatbot-container {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 350px;
+  height: 500px;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  display: none;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.chatbot-container.active {
+  display: flex;
+}
+
+.chatbot-header {
+  background: #2563eb;
+  color: white;
+  padding: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.chatbot-header h3 {
+  margin: 0;
+  font-size: 16px;
+}
+
+.chatbot-close {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.chatbot-messages {
+  flex: 1;
+  padding: 15px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.message {
+  max-width: 80%;
+  padding: 10px 12px;
+  border-radius: 12px;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.bot-message {
+  background: #f3f4f6;
+  color: #374151;
+  align-self: flex-start;
+}
+
+.user-message {
+  background: #2563eb;
+  color: white;
+  align-self: flex-end;
+}
+
+.chatbot-input {
+  padding: 15px;
+  border-top: 1px solid #e5e7eb;
+  display: flex;
+  gap: 10px;
+}
+
+.chatbot-input input {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.chatbot-input button {
+  padding: 10px 15px;
+  background: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.chatbot-input button:hover {
+  background: #1e40af;
+}
+
+.chatbot-toggle {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: #2563eb;
+  color: white;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(37, 99, 235, 0.3);
+  z-index: 1001;
+  transition: all 0.3s ease;
+}
+
+.chatbot-toggle:hover {
+  background: #1e40af;
+  transform: scale(1.1);
+}
+/* Responsive */
+@media (max-width:768px){
+  .main-container { flex-direction:column; height:auto; gap:15px; padding:10px; }
+  .panel { width:100%; max-height:60vh; order:2; }
+  #map { height:50vh; order:1; }
+  #info-box { font-size:12px; bottom:10px; left:10px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="navbar">
+    <div class="navbar__container" id="intro">
+      <img
+        src="images/Travel Influencer Vlogger Logo in Blue Green Brown Organic Illustration Style (1).png"
+        alt=""
+        class="nav__logo"
+      />
+      <nav class="navbar__menu">
+        <ul class="navbar__list">
+          <li><a href="index.html#services" class="navbar__link">About Us</a></li>
+          <li><a href="index.html#gallery" class="navbar__link">Explore</a></li>
+          <li>
+            <a href="index.html#testimonial" class="navbar__link">Testimonials</a>
+          </li>
+          <li>
+            <a href="map.html" class="navbar__btn">TRY NOW</a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <div class="main-container">
+  <div class="panel">
+    <h2>Streetly AI Travel Assistant</h2>
+    <div>
+      <label>Leaving From</label>
+      <div class="autocomplete-container">
+        <input type="text" id="origin" placeholder="e.g., Karachi" autocomplete="off">
+        <div id="origin-suggestions" class="autocomplete-suggestions"></div>
+      </div>
+    </div>
+    <div>
+      <label>Destination</label>
+      <select id="destination">
+        <option value="Hunza Valley">Hunza Valley</option>
+        <option value="Naran">Naran</option>
+        <option value="Fairy Meadows">Fairy Meadows</option>
+        <option value="Swat">Swat</option>
+        <option value="Chitral">Chitral</option>
+        <option value="Skardu">Skardu</option>
+        <option value="Neelam Valley">Neelam Valley</option>
+      </select>
+    </div>
+    <div>
+      <label>Travel Date</label>
+      <input type="date" id="date">
+    </div>
+    <div>
+      <label>Budget (PKR)</label>
+      <input type="number" id="budget" placeholder="e.g., 15000">
+    </div>
+    <button onclick="planTrip()">Plan My Trip</button>
+
+    <!-- Interactive routes panel -->
+    <div id="routes-panel"></div>
+    <!-- Weather + hotels -->
+    <div id="trip-summary"></div>
+  </div>
+  
+  <!-- Map Section -->
+  <div class="map-section">
+    <!-- Disaster Controls - Above Map -->
+    <div class="disaster-controls">
+      <button class="disaster-btn predict-disaster-btn" id="predictDisasterBtn">Predict Disaster</button>
+      <button class="disaster-btn report-btn" id="reportBtn">Report</button>
+    </div>
+    
+  <div id="map"></div>
+    
+    <!-- Map Legend -->
+    <div class="map-legend" id="mapLegend" style="display: none;">
+      <h4>Map Legend</h4>
+      <div class="legend-item">
+        <div class="legend-icon flood-high"></div>
+        <span>Flood High Risk</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-icon flood-medium"></div>
+        <span>Flood Medium Risk</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-icon flood-low"></div>
+        <span>Flood Low Risk</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-icon earthquake-high"></div>
+        <span>Earthquake High Risk</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-icon earthquake-medium"></div>
+        <span>Earthquake Medium Risk</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-icon earthquake-low"></div>
+        <span>Earthquake Low Risk</span>
+      </div>
+    </div>
+  </div>
+</div>
+  <div id="info-box">Ready to explore Northern Pakistan 🌄</div>
+
+  <!-- Chatbot -->
+  <div class="chatbot-container" id="chatbotContainer">
+    <div class="chatbot-header">
+      <h3>Streetly Travel Assistant</h3>
+      <button class="chatbot-close" onclick="toggleChatbot()">×</button>
+    </div>
+    <div class="chatbot-messages" id="chatbotMessages">
+      <div class="message bot-message">
+        <div class="message-content">
+          Hi! I'm Streetly, your AI travel assistant for Pakistan. How can I help you plan your trip today? 🌄
+        </div>
+      </div>
+    </div>
+    <div class="chatbot-input">
+      <input type="text" id="chatbotInput" placeholder="Ask me about routes, weather, hotels..." />
+      <button onclick="sendMessage()">Send</button>
+    </div>
+  </div>
+  
+  <!-- Chatbot Toggle Button -->
+  <button class="chatbot-toggle" id="chatbotToggle" onclick="toggleChatbot()">
+    💬
+  </button>
+
+  <!-- Route Details Panel -->
+  <div id="route-details-panel">
+    <button class="panel-close-btn" onclick="closeRoutePanel()">×</button>
+    <div class="route-tabs">
+      <button class="route-tab active" onclick="showRouteTab('details')">Details</button>
+      <button class="route-tab" onclick="showRouteTab('preview')">Preview</button>
+    </div>
+    <div class="route-content" id="route-details-content">
+      <!-- Details content will be populated here -->
+    </div>
+    <div class="route-content" id="route-preview-content" style="display:none;">
+      <!-- Preview content will be populated here -->
+    </div>
+  </div>
+
+  <script>
+const API_BASE = "http://127.0.0.1:8080";
+    let map, directionsService, directionsRenderer;
+let currentRoutes = null;
+let selectedRouteIndex = 0;
+
+// Pakistani cities and locations for autocomplete
+const pakistaniLocations = [
+  // Major Cities
+  { name: "Karachi", type: "City", province: "Sindh" },
+  { name: "Lahore", type: "City", province: "Punjab" },
+  { name: "Islamabad", type: "Capital", province: "Federal" },
+  { name: "Rawalpindi", type: "City", province: "Punjab" },
+  { name: "Faisalabad", type: "City", province: "Punjab" },
+  { name: "Multan", type: "City", province: "Punjab" },
+  { name: "Peshawar", type: "City", province: "KPK" },
+  { name: "Quetta", type: "City", province: "Balochistan" },
+  { name: "Sialkot", type: "City", province: "Punjab" },
+  { name: "Gujranwala", type: "City", province: "Punjab" },
+  { name: "Sargodha", type: "City", province: "Punjab" },
+  { name: "Bahawalpur", type: "City", province: "Punjab" },
+  { name: "Sukkur", type: "City", province: "Sindh" },
+  { name: "Larkana", type: "City", province: "Sindh" },
+  { name: "Hyderabad", type: "City", province: "Sindh" },
+  { name: "Gujrat", type: "City", province: "Punjab" },
+  { name: "Sheikhupura", type: "City", province: "Punjab" },
+  { name: "Rahim Yar Khan", type: "City", province: "Punjab" },
+  { name: "Kasur", type: "City", province: "Punjab" },
+  { name: "Mardan", type: "City", province: "KPK" },
+  
+  // Northern Areas & Tourist Destinations
+  { name: "Hunza Valley", type: "Valley", province: "Gilgit-Baltistan" },
+  { name: "Naran", type: "Valley", province: "KPK" },
+  { name: "Fairy Meadows", type: "Meadow", province: "Gilgit-Baltistan" },
+  { name: "Swat", type: "Valley", province: "KPK" },
+  { name: "Chitral", type: "Valley", province: "KPK" },
+  { name: "Skardu", type: "City", province: "Gilgit-Baltistan" },
+  { name: "Neelam Valley", type: "Valley", province: "Azad Kashmir" },
+  { name: "Shandur", type: "Pass", province: "Gilgit-Baltistan" },
+  { name: "Gilgit", type: "City", province: "Gilgit-Baltistan" },
+  { name: "Kalam", type: "Valley", province: "KPK" },
+  { name: "Malam Jabba", type: "Resort", province: "KPK" },
+  { name: "Murree", type: "Hill Station", province: "Punjab" },
+  { name: "Nathia Gali", type: "Hill Station", province: "KPK" },
+  { name: "Ayubia", type: "National Park", province: "KPK" },
+  { name: "Kaghan Valley", type: "Valley", province: "KPK" },
+  { name: "Shogran", type: "Hill Station", province: "KPK" },
+  { name: "Siri Paye", type: "Meadow", province: "KPK" },
+  { name: "Saif-ul-Malook", type: "Lake", province: "KPK" },
+  { name: "Ansoo Lake", type: "Lake", province: "KPK" },
+  { name: "Ratti Gali Lake", type: "Lake", province: "Azad Kashmir" },
+  { name: "Banjosa Lake", type: "Lake", province: "Azad Kashmir" },
+  { name: "Pir Chinasi", type: "Peak", province: "Azad Kashmir" },
+  { name: "Muzaffarabad", type: "City", province: "Azad Kashmir" },
+  { name: "Mirpur", type: "City", province: "Azad Kashmir" },
+  { name: "Kotli", type: "City", province: "Azad Kashmir" },
+  
+  // Coastal Areas
+  { name: "Gwadar", type: "Port City", province: "Balochistan" },
+  { name: "Ormara", type: "Beach", province: "Balochistan" },
+  { name: "Pasni", type: "Beach", province: "Balochistan" },
+  { name: "Jiwani", type: "Beach", province: "Balochistan" },
+  { name: "Clifton Beach", type: "Beach", province: "Sindh" },
+  { name: "French Beach", type: "Beach", province: "Sindh" },
+  { name: "Sandspit Beach", type: "Beach", province: "Sindh" },
+  
+  // Historical Places
+  { name: "Mohenjo-daro", type: "Archaeological Site", province: "Sindh" },
+  { name: "Harappa", type: "Archaeological Site", province: "Punjab" },
+  { name: "Taxila", type: "Archaeological Site", province: "Punjab" },
+  { name: "Lahore Fort", type: "Historical Site", province: "Punjab" },
+  { name: "Badshahi Mosque", type: "Mosque", province: "Punjab" },
+  { name: "Shalimar Gardens", type: "Garden", province: "Punjab" },
+  { name: "Wazir Khan Mosque", type: "Mosque", province: "Punjab" },
+  { name: "Faisal Mosque", type: "Mosque", province: "Federal" },
+  { name: "Minar-e-Pakistan", type: "Monument", province: "Punjab" },
+  { name: "Quaid-e-Azam Mazar", type: "Mausoleum", province: "Sindh" },
+  
+  // Other Notable Places
+  { name: "Thar Desert", type: "Desert", province: "Sindh" },
+  { name: "Cholistan Desert", type: "Desert", province: "Punjab" },
+  { name: "K2 Base Camp", type: "Base Camp", province: "Gilgit-Baltistan" },
+  { name: "Concordia", type: "Glacier", province: "Gilgit-Baltistan" },
+  { name: "Baltoro Glacier", type: "Glacier", province: "Gilgit-Baltistan" },
+  { name: "Biafo Glacier", type: "Glacier", province: "Gilgit-Baltistan" },
+  { name: "Hispar Glacier", type: "Glacier", province: "Gilgit-Baltistan" },
+  { name: "Rush Lake", type: "Lake", province: "Gilgit-Baltistan" },
+  { name: "Attabad Lake", type: "Lake", province: "Gilgit-Baltistan" },
+  { name: "Shangrila Resort", type: "Resort", province: "Gilgit-Baltistan" },
+  { name: "Eagle's Nest", type: "Viewpoint", province: "Gilgit-Baltistan" },
+  { name: "Passu Cones", type: "Mountain", province: "Gilgit-Baltistan" },
+  { name: "Khunjerab Pass", type: "Border Pass", province: "Gilgit-Baltistan" },
+  { name: "Baltit Fort", type: "Fort", province: "Gilgit-Baltistan" },
+  { name: "Altit Fort", type: "Fort", province: "Gilgit-Baltistan" }
+];
+
+// Autocomplete functionality
+let currentSuggestions = [];
+let selectedSuggestionIndex = -1;
+
+function initAutocomplete() {
+  const originInput = document.getElementById('origin');
+  const suggestionsContainer = document.getElementById('origin-suggestions');
+  
+  originInput.addEventListener('input', function(e) {
+    const query = e.target.value.toLowerCase().trim();
+    
+    if (query.length < 2) {
+      hideSuggestions();
+      return;
+    }
+    
+    // Filter locations based on query
+    const filtered = pakistaniLocations.filter(location => 
+      location.name.toLowerCase().includes(query) ||
+      location.province.toLowerCase().includes(query) ||
+      location.type.toLowerCase().includes(query)
+    );
+    
+    // Sort by relevance (exact matches first, then partial matches)
+    filtered.sort((a, b) => {
+      const aExact = a.name.toLowerCase().startsWith(query);
+      const bExact = b.name.toLowerCase().startsWith(query);
+      
+      if (aExact && !bExact) return -1;
+      if (!aExact && bExact) return 1;
+      
+      return a.name.localeCompare(b.name);
+    });
+    
+    currentSuggestions = filtered.slice(0, 8); // Limit to 8 suggestions
+    selectedSuggestionIndex = -1;
+    showSuggestions();
+  });
+  
+  originInput.addEventListener('keydown', function(e) {
+    if (!suggestionsContainer.style.display || suggestionsContainer.style.display === 'none') {
+      return;
+    }
+    
+    switch(e.key) {
+      case 'ArrowDown':
+        e.preventDefault();
+        selectedSuggestionIndex = Math.min(selectedSuggestionIndex + 1, currentSuggestions.length - 1);
+        updateHighlight();
+        break;
+      case 'ArrowUp':
+        e.preventDefault();
+        selectedSuggestionIndex = Math.max(selectedSuggestionIndex - 1, -1);
+        updateHighlight();
+        break;
+      case 'Enter':
+        e.preventDefault();
+        if (selectedSuggestionIndex >= 0) {
+          selectSuggestion(currentSuggestions[selectedSuggestionIndex]);
+        }
+        break;
+      case 'Escape':
+        hideSuggestions();
+        break;
+    }
+  });
+  
+  // Hide suggestions when clicking outside
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('.autocomplete-container')) {
+      hideSuggestions();
+    }
+  });
+}
+
+function showSuggestions() {
+  const suggestionsContainer = document.getElementById('origin-suggestions');
+  
+  if (currentSuggestions.length === 0) {
+    hideSuggestions();
+    return;
+  }
+  
+  suggestionsContainer.innerHTML = currentSuggestions.map((location, index) => `
+    <div class="autocomplete-suggestion" data-index="${index}">
+      <span class="location-name">${location.name}</span>
+      <span class="location-type">${location.type}, ${location.province}</span>
+    </div>
+  `).join('');
+  
+  // Add click event listeners
+  suggestionsContainer.querySelectorAll('.autocomplete-suggestion').forEach((suggestion, index) => {
+    suggestion.addEventListener('click', () => {
+      selectSuggestion(currentSuggestions[index]);
+    });
+  });
+  
+  suggestionsContainer.style.display = 'block';
+}
+
+function hideSuggestions() {
+  const suggestionsContainer = document.getElementById('origin-suggestions');
+  suggestionsContainer.style.display = 'none';
+  currentSuggestions = [];
+  selectedSuggestionIndex = -1;
+}
+
+function updateHighlight() {
+  const suggestions = document.querySelectorAll('.autocomplete-suggestion');
+  suggestions.forEach((suggestion, index) => {
+    suggestion.classList.toggle('highlighted', index === selectedSuggestionIndex);
+  });
+}
+
+function selectSuggestion(location) {
+  const originInput = document.getElementById('origin');
+  originInput.value = location.name;
+  hideSuggestions();
+}
+
+    function initMap() {
+  map = new google.maps.Map(document.getElementById("map"), {center:{lat:35.5,lng:74.3}, zoom:7});
+      directionsService = new google.maps.DirectionsService();
+  directionsRenderer = new google.maps.DirectionsRenderer({
+    map:map, 
+    suppressMarkers:false,
+    polylineOptions: {
+      strokeColor: '#2563eb',
+      strokeWeight: 4
+    }
+  });
+  
+  // Initialize autocomplete functionality
+  initAutocomplete();
+}
+
+function showRouteTab(tab) {
+  // Update tab buttons
+  document.querySelectorAll('.route-tab').forEach(t => t.classList.remove('active'));
+  event.target.classList.add('active');
+  
+  // Show/hide content
+  document.getElementById('route-details-content').style.display = tab === 'details' ? 'block' : 'none';
+  document.getElementById('route-preview-content').style.display = tab === 'preview' ? 'block' : 'none';
+  
+  if (tab === 'preview' && currentRoutes) {
+    showRoutePreview();
+  }
+}
+
+function selectRoute(index) {
+  selectedRouteIndex = index;
+  
+  // Update visual selection
+  document.querySelectorAll('.route-option').forEach((el, i) => {
+    el.classList.toggle('selected', i === index);
+  });
+  
+  // Update map
+  directionsRenderer.setRouteIndex(index);
+}
+
+function showRouteDetails(index) {
+  if (index !== undefined) {
+    selectedRouteIndex = index;
+    // Update visual selection
+    document.querySelectorAll('.route-option').forEach((el, i) => {
+      el.classList.toggle('selected', i === index);
+    });
+    // Update map
+    directionsRenderer.setRouteIndex(index);
+  }
+  
+  if (!currentRoutes || !currentRoutes.routes || !currentRoutes.routes[selectedRouteIndex]) {
+    alert('Route data not available. Please plan a trip first.');
+    return;
+  }
+  
+  const route = currentRoutes.routes[selectedRouteIndex];
+  const leg = route.legs[0];
+  const detailsPanel = document.getElementById('route-details-panel');
+  const detailsContent = document.getElementById('route-details-content');
+  
+  // Check for tolls
+  const hasTolls = route.legs.some(leg => leg.steps.some(step => 
+    step.instructions.toLowerCase().includes('toll') || 
+    step.instructions.toLowerCase().includes('fee')
+  ));
+  
+  // Generate share link
+  const shareUrl = `https://www.google.com/maps/dir/${encodeURIComponent(leg.start_address)}/${encodeURIComponent(leg.end_address)}`;
+  
+  detailsContent.innerHTML = `
+    <div style="margin-bottom: 15px;">
+      <h3 style="margin: 0 0 10px 0; color: #2563eb;">Route ${selectedRouteIndex + 1}</h3>
+      <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+        <span><strong>Distance:</strong> ${leg.distance.text}</span>
+        <span><strong>Duration:</strong> ${leg.duration.text}</span>
+      </div>
+      <div style="font-size: 0.9rem; color: #6b7280;">
+        <strong>From:</strong> ${leg.start_address}<br>
+        <strong>To:</strong> ${leg.end_address}
+      </div>
+    </div>
+    
+    ${hasTolls ? '<div class="toll-info">⚠️ This route may include toll roads</div>' : ''}
+    
+    <div class="share-buttons">
+      <button class="share-btn" onclick="copyDirectionsLink()">📋 Copy Link</button>
+      <button class="share-btn" onclick="shareDirections()">📧 Send to your phone</button>
+    </div>
+    
+    <div style="margin-top: 15px;">
+      <h4 style="margin: 0 0 10px 0;">Key Directions:</h4>
+      <div style="max-height: 200px; overflow-y: auto;">
+        ${leg.steps.slice(0, 5).map((step, i) => `
+          <div class="route-step">
+            <div class="step-icon">${i + 1}</div>
+            <div class="step-text">${step.instructions.replace(/<[^>]*>/g, '')}</div>
+          </div>
+        `).join('')}
+        ${leg.steps.length > 5 ? `<div style="text-align: center; color: #6b7280; font-size: 0.85rem; margin-top: 10px;">... and ${leg.steps.length - 5} more steps</div>` : ''}
+      </div>
+    </div>
+  `;
+  
+  // Slide in the panel - force it to be visible
+  detailsPanel.style.right = '0px';
+  detailsPanel.style.display = 'block';
+  detailsPanel.style.zIndex = '9999';
+  detailsPanel.classList.add('slide-in');
+}
+
+function closeRoutePanel() {
+  const detailsPanel = document.getElementById('route-details-panel');
+  detailsPanel.style.right = '-400px';
+  detailsPanel.classList.remove('slide-in');
+}
+
+
+
+function showRoutePreview() {
+  if (!currentRoutes || !currentRoutes.routes || !currentRoutes.routes[selectedRouteIndex]) {
+    return;
+  }
+  
+  const route = currentRoutes.routes[selectedRouteIndex];
+  const leg = route.legs[0];
+  const previewContent = document.getElementById('route-preview-content');
+  
+  previewContent.innerHTML = `
+    <div style="margin-bottom: 15px;">
+      <h3 style="margin: 0 0 10px 0; color: #2563eb;">Complete Route Preview</h3>
+      <div style="font-size: 0.9rem; color: #6b7280; margin-bottom: 15px;">
+        ${leg.distance.text} • ${leg.duration.text}
+      </div>
+    </div>
+    
+    <div style="max-height: 400px; overflow-y: auto;">
+      ${leg.steps.map((step, i) => `
+        <div class="route-step">
+          <div class="step-icon">${i + 1}</div>
+          <div class="step-text">
+            <div style="font-weight: 500; margin-bottom: 4px;">
+              ${step.instructions.replace(/<[^>]*>/g, '')}
+            </div>
+            <div style="font-size: 0.8rem; color: #6b7280;">
+              ${step.distance.text} • ${step.duration.text}
+            </div>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+  `;
+}
+
+function copyDirectionsLink() {
+  if (!currentRoutes || !currentRoutes.routes || !currentRoutes.routes[selectedRouteIndex]) {
+    alert('Route data not available.');
+    return;
+  }
+  
+  const leg = currentRoutes.routes[selectedRouteIndex].legs[0];
+  const shareUrl = `https://www.google.com/maps/dir/${encodeURIComponent(leg.start_address)}/${encodeURIComponent(leg.end_address)}`;
+  
+  navigator.clipboard.writeText(shareUrl).then(() => {
+    alert('Directions link copied to clipboard!');
+  }).catch(() => {
+    // Fallback for older browsers
+    const textArea = document.createElement('textarea');
+    textArea.value = shareUrl;
+    document.body.appendChild(textArea);
+    textArea.select();
+    document.execCommand('copy');
+    document.body.removeChild(textArea);
+    alert('Directions link copied to clipboard!');
+  });
+}
+
+function shareDirections() {
+  if (!currentRoutes || !currentRoutes.routes || !currentRoutes.routes[selectedRouteIndex]) {
+    alert('Route data not available.');
+    return;
+  }
+  
+  const leg = currentRoutes.routes[selectedRouteIndex].legs[0];
+  const shareUrl = `https://www.google.com/maps/dir/${encodeURIComponent(leg.start_address)}/${encodeURIComponent(leg.end_address)}`;
+  const subject = `Directions: ${leg.start_address} to ${leg.end_address}`;
+  const body = `Check out these directions: ${shareUrl}`;
+  
+  // Create a modal for email input like Google Maps
+  const email = prompt('Enter email address to send directions:');
+  if (email && email.includes('@')) {
+    window.open(`mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`);
+  } else if (email) {
+    alert('Please enter a valid email address');
+  }
+}
+
+async function planTrip(){
+      const origin = document.getElementById('origin').value;
+      const destination = document.getElementById('destination').value;
+      const budget = document.getElementById('budget').value;
+      const infoBox = document.getElementById('info-box');
+  const routesPanel = document.getElementById('routes-panel');
+  const tripSummary = document.getElementById('trip-summary');
+
+  console.log('Plan Trip - Origin:', origin, 'Destination:', destination, 'Budget:', budget);
+
+  if(!origin || !destination){ alert("Enter origin and destination"); return; }
+  infoBox.innerHTML = "Loading routes...";
+  document.getElementById('route-details-panel').style.display = 'none';
+
+  directionsService.route({
+    origin: origin,
+    destination: destination,
+    travelMode: 'DRIVING',
+    provideRouteAlternatives: true,
+    drivingOptions: { 
+      departureTime: new Date(), 
+      trafficModel: 'bestguess' 
+    }
+  }, (result, status)=>{
+    if(status==='OK'){
+      currentRoutes = result;
+      directionsRenderer.setDirections(result);
+      routesPanel.innerHTML='';
+      
+      result.routes.forEach((route,index)=>{
+        const routeDiv=document.createElement('div');
+        routeDiv.className='route-option';
+        if(index === 0) routeDiv.classList.add('selected');
+        
+        routeDiv.innerHTML=`
+          <div style="padding-right: 40px;">
+            <b>Route ${index+1}</b><br>
+            Distance: ${route.legs[0].distance.text}<br>
+            Duration: ${route.legs[0].duration.text}<br>
+            Travel Mode: Driving
+          </div>
+          <button class="route-details-btn" onclick="event.stopPropagation(); showRouteDetails(${index})" title="View details">→</button>
+        `;
+        routeDiv.onclick=()=> selectRoute(index);
+        routesPanel.appendChild(routeDiv);
+      });
+      
+      // Set first route as selected
+      selectedRouteIndex = 0;
+      
+      infoBox.innerHTML = "✅ Routes loaded successfully!";
+        } else {
+      routesPanel.innerHTML = "⚠ Could not load routes";
+      infoBox.innerHTML = "⚠ Error: "+status;
+        }
+      });
+
+      // Weather and Hotels - Auto open chatbot with data
+  try{
+    // Fetch weather data
+    const weatherRes=await fetch(`${API_BASE}/weather?city=${destination}`);
+    if (!weatherRes.ok) throw new Error(`Weather API error: ${weatherRes.status}`);
+    const weather=await weatherRes.json();
+
+    // Fetch hotel data (only if budget is provided)
+    let hotels = [];
+    if (budget && budget.trim() !== '') {
+    const hotelRes=await fetch(`${API_BASE}/hotels?city=${destination}&budget=${budget}`);
+      if (!hotelRes.ok) throw new Error(`Hotel API error: ${hotelRes.status}`);
+      hotels=await hotelRes.json();
+    }
+    
+    // Clear the trip summary panel
+    tripSummary.innerHTML="";
+    
+    // Auto open chatbot with weather and hotel data
+    openChatbotWithTripData(destination, weather, hotels, budget);
+    
+  }catch(error){ 
+    console.error('Error fetching trip data:', error);
+    tripSummary.innerHTML="⚠ Weather and hotel data unavailable";
+    // Still try to open chatbot with error message
+    openChatbotWithError(destination);
+  }
+    }
+
+// Chatbot Functions
+function toggleChatbot() {
+  const chatbotContainer = document.getElementById('chatbotContainer');
+  const chatbotToggle = document.getElementById('chatbotToggle');
+  
+  if (chatbotContainer.classList.contains('active')) {
+    chatbotContainer.classList.remove('active');
+    chatbotToggle.style.display = 'block';
+  } else {
+    chatbotContainer.classList.add('active');
+    chatbotToggle.style.display = 'none';
+  }
+}
+
+function sendMessage() {
+  const input = document.getElementById('chatbotInput');
+  const message = input.value.trim();
+  
+  if (!message) return;
+  
+  // Add user message
+  appendMessage('user', message);
+  input.value = '';
+  
+  // Send to backend
+  fetch(`${API_BASE}/chat`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ message: message })
+  })
+  .then(response => response.json())
+  .then(data => {
+    appendMessage('bot', data.reply);
+  })
+  .catch(error => {
+    console.error('Error:', error);
+    appendMessage('bot', 'Sorry, I\'m having trouble connecting right now. Please try again.');
+  });
+}
+
+function appendMessage(type, content) {
+  const messagesContainer = document.getElementById('chatbotMessages');
+  const messageDiv = document.createElement('div');
+  messageDiv.className = `message ${type}-message`;
+  
+  const contentDiv = document.createElement('div');
+  contentDiv.className = 'message-content';
+  
+  // Process markdown links and make them clickable
+  const processedContent = processMarkdownLinks(content);
+  contentDiv.innerHTML = processedContent;
+  
+  messageDiv.appendChild(contentDiv);
+  messagesContainer.appendChild(messageDiv);
+  
+  // Scroll to bottom
+  messagesContainer.scrollTop = messagesContainer.scrollHeight;
+}
+
+// Function to process markdown links and convert them to clickable HTML links
+function processMarkdownLinks(text) {
+  // Convert markdown links [text](url) to HTML links
+  const linkRegex = /\[([^\]]+)\]\(([^)]+)\)/g;
+  let processedText = text.replace(linkRegex, '<a href="$2" target="_blank" style="color: #007bff; text-decoration: underline;">$1</a>');
+  
+  // Convert **bold** text to <strong>
+  processedText = processedText.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+  
+  // Convert line breaks to <br> tags
+  processedText = processedText.replace(/\n/g, '<br>');
+  
+  return processedText;
+}
+
+// Function to auto open chatbot with complete trip data
+function openChatbotWithTripData(destination, weather, hotels, budget) {
+  // Open the chatbot
+  const chatbotContainer = document.getElementById('chatbotContainer');
+  const chatbotToggle = document.getElementById('chatbotToggle');
+  
+  if (!chatbotContainer.classList.contains('active')) {
+    chatbotContainer.classList.add('active');
+    chatbotToggle.style.display = 'none';
+  }
+  
+  // Clear existing messages
+  const messagesContainer = document.getElementById('chatbotMessages');
+  messagesContainer.innerHTML = '';
+  
+  // Add welcome message
+  appendMessage('bot', `🎉 Trip planning complete for ${destination}! Here's your travel information:`);
+  
+  // Add weather information
+  const weatherMessage = `🌤️ **Current Weather in ${destination}:**
+• Temperature: ${weather.temp}°C (feels like ${weather.feels_like}°C)
+• Condition: ${weather.condition}
+• Humidity: ${weather.humidity}%
+• Wind Speed: ${weather.wind_speed} m/s
+
+Ask me about what to pack, weather-related travel tips, or seasonal recommendations!`;
+  appendMessage('bot', weatherMessage);
+  
+  // Add hotel information (only if hotels are available)
+  if (hotels && hotels.length > 0) {
+    const hotelList = hotels.map(h => `• **${h.name}** - ${h.price} PKR (${h.type}, Rating: ${h.rating})`).join('\n');
+    const hotelMessage = `🏨 **Hotel Recommendations (Budget: ${budget} PKR):**
+
+${hotelList}
+
+Ask me about specific hotels, amenities, locations, or any accommodation questions!`;
+    appendMessage('bot', hotelMessage);
+  } else {
+    const hotelMessage = `🏨 **Hotel Recommendations:**
+
+No budget specified, so I couldn't fetch specific hotel recommendations. Please enter your budget in the form above and click "Plan My Trip" again to see hotel options!
+
+Or ask me about general accommodation information for ${destination}.`;
+    appendMessage('bot', hotelMessage);
+  }
+  
+  // Add helpful tip
+  appendMessage('bot', `💡 **Need help?** Ask me about:
+• Best time to visit
+• What to pack for this weather
+• Hotel amenities and locations
+• Travel tips and recommendations
+• Route planning and alternatives`);
+}
+
+// Function to open chatbot with error message
+function openChatbotWithError(destination) {
+  // Open the chatbot
+  const chatbotContainer = document.getElementById('chatbotContainer');
+  const chatbotToggle = document.getElementById('chatbotToggle');
+  
+  if (!chatbotContainer.classList.contains('active')) {
+    chatbotContainer.classList.add('active');
+    chatbotToggle.style.display = 'none';
+  }
+  
+  // Clear existing messages
+  const messagesContainer = document.getElementById('chatbotMessages');
+  messagesContainer.innerHTML = '';
+  
+  // Add error message
+  appendMessage('bot', `⚠️ Sorry, I couldn't fetch weather and hotel data for ${destination} right now. But I'm still here to help you plan your trip! Ask me about:
+• General travel information
+• Route planning
+• Travel tips and recommendations
+• Alternative destinations`);
+}
+
+// Function to open chatbot with SOS and disaster reporting information
+function openChatbotWithSOSInfo() {
+  // Open the chatbot
+  const chatbotContainer = document.getElementById('chatbotContainer');
+  const chatbotToggle = document.getElementById('chatbotToggle');
+  
+  if (!chatbotContainer.classList.contains('active')) {
+    chatbotContainer.classList.add('active');
+    chatbotToggle.style.display = 'none';
+  }
+  
+  // Clear existing messages
+  const messagesContainer = document.getElementById('chatbotMessages');
+  messagesContainer.innerHTML = '';
+  
+  // Add welcome message
+  appendMessage('bot', `🚨 **Emergency & Disaster Reporting Information** for Northern Pakistan`);
+  
+  // Add emergency services information with better formatting
+  const emergencyMessage = `🆘 **IMMEDIATE EMERGENCY SERVICES** (Life-threatening situations)
+
+**📞 Emergency Numbers:**
+• **Rescue 1122 (GB)**: 1122 - Ambulance, Fire, Rescue (Quickest help)
+• **Police Emergency**: 15 - Security concerns, police assistance  
+• **Ambulance**: 115 - Medical emergencies
+
+⚠️ **For immediate life-threatening emergencies, call 1122 first!**`;
+  appendMessage('bot', emergencyMessage);
+  
+  // Add disaster management authorities with better formatting
+  const disasterMessage = `🏛️ **DISASTER MANAGEMENT AUTHORITIES** (Official Reporting)
+
+**A. Gilgit-Baltistan Disaster Management Authority (GBDMA)**
+• Primary regional authority for disaster response
+• Contact your local District Disaster Management Unit (DDMU)
+• Check official Gilgit-Baltistan government website for contact numbers
+
+**B. National Disaster Management Authority (NDMA)**
+• **NDMA UAN-No: 051-111-157-157**
+• National Emergencies Operation Center (NEOC)
+• Federal oversight for disaster management
+
+**📞 Best Reporting Process:**
+1. Call **1122** for immediate rescue/medical help
+2. Contact **GBDMA/DDMU** for official disaster reporting
+3. Call **NDMA** (051-111-157-157) for federal coordination`;
+  appendMessage('bot', disasterMessage);
+  
+  // Add NDMA links and additional information with clickable links
+  const ndmaMessage = `🌐 **Additional Resources**
+
+**National Disaster Management Authority (NDMA):**
+• **Website**: [https://www.ndma.gov.pk/](https://www.ndma.gov.pk/)
+• **NEOC** (National Emergencies Operation Center) - 24/7 monitoring
+• Proactive disaster management and early warning systems
+
+**📱 Contact Information:**
+• **UAN**: 051-111-157-157
+• **WhatsApp**: 0300-0881641
+• **Email**: info@ndma.gov.pk
+• **Address**: Main Murree Road Near ITP Office, Islamabad
+
+💡 **Remember**: In any disaster situation, prioritize safety first, then report to authorities for coordinated response.`;
+  appendMessage('bot', ndmaMessage);
+  
+  // Add helpful tips
+  appendMessage('bot', `💡 **Need help with:**
+• Emergency contact numbers for specific areas
+• Disaster preparedness tips
+• Weather alerts and warnings
+• Travel safety recommendations
+• Alternative emergency contacts
+
+Ask me anything about emergency procedures or disaster preparedness!`);
+}
+
+// Legacy functions (kept for compatibility)
+function openChatbotWithWeather(destination) {
+  // Open the chatbot
+  const chatbotContainer = document.getElementById('chatbotContainer');
+  const chatbotToggle = document.getElementById('chatbotToggle');
+  
+  if (!chatbotContainer.classList.contains('active')) {
+    chatbotContainer.classList.add('active');
+    chatbotToggle.style.display = 'none';
+  }
+  
+  // Add a message about weather
+  appendMessage('bot', `🌤️ Weather information for ${destination} is now available! Ask me anything about the weather conditions, what to pack, or travel recommendations based on the current weather.`);
+}
+
+function openChatbotWithHotels(destination, budget) {
+  // Open the chatbot
+  const chatbotContainer = document.getElementById('chatbotContainer');
+  const chatbotToggle = document.getElementById('chatbotToggle');
+  
+  if (!chatbotContainer.classList.contains('active')) {
+    chatbotContainer.classList.add('active');
+    chatbotToggle.style.display = 'none';
+  }
+  
+  // Add a message about hotels
+  appendMessage('bot', `🏨 Hotel recommendations for ${destination} within your budget of ${budget} PKR are now available! Ask me about specific hotels, amenities, locations, or any other accommodation questions.`);
+}
+
+// Allow Enter key to send message
+document.addEventListener('DOMContentLoaded', function() {
+  const chatbotInput = document.getElementById('chatbotInput');
+  if (chatbotInput) {
+    chatbotInput.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        sendMessage();
+      }
+    });
+  }
+});
+
+// Disaster Control Functions
+function handlePredictDisaster() {
+  console.log('🔴 Predict Disaster clicked');
+  const btn = document.getElementById('predictDisasterBtn');
+  
+  // Prevent multiple clicks
+  if (btn.disabled) {
+    console.log('⚠️ Button already processing, ignoring click');
+    return;
+  }
+  
+  // Add visual feedback
+  btn.style.opacity = '0.7';
+  btn.textContent = 'Loading...';
+  btn.disabled = true;
+  
+  fetchMLPredictions()
+    .then(() => {
+      console.log('✅ Predictions loaded successfully');
+    })
+    .catch((error) => {
+      console.error('❌ Error loading predictions:', error);
+      alert('Failed to load predictions. Please try again.');
+    })
+    .finally(() => {
+      // Reset button
+      btn.style.opacity = '1';
+      btn.textContent = 'Predict Disaster';
+      btn.disabled = false;
+    });
+}
+
+function handleReportDisaster() {
+  console.log('🟢 Report Disaster clicked');
+  const btn = document.getElementById('reportBtn');
+  
+  // Add visual feedback
+  btn.style.opacity = '0.7';
+  btn.textContent = 'Opening...';
+  btn.disabled = true;
+  
+  // Open chatbot with SOS information
+  openChatbotWithSOSInfo();
+  
+  // Reset button after short delay
+  setTimeout(() => {
+    btn.style.opacity = '1';
+    btn.textContent = 'Report';
+    btn.disabled = false;
+  }, 500);
+}
+
+// Add event listeners for disaster buttons
+document.addEventListener('DOMContentLoaded', function() {
+  const predictBtn = document.getElementById('predictDisasterBtn');
+  const reportBtn = document.getElementById('reportBtn');
+  
+  if (predictBtn) {
+    predictBtn.addEventListener('click', handlePredictDisaster);
+    console.log('✅ Predict Disaster button event listener added');
+  } else {
+    console.log('❌ Predict Disaster button not found');
+  }
+  
+  if (reportBtn) {
+    reportBtn.addEventListener('click', handleReportDisaster);
+    console.log('✅ Report button event listener added');
+  } else {
+    console.log('❌ Report button not found');
+  }
+});
+
+// ML Predictions Functions
+let mlPredictionMarkers = [];
+let currentInfoWindow = null;
+
+async function fetchMLPredictions() {
+  try {
+    console.log('🔄 Fetching ML predictions...');
+    const response = await fetch('http://127.0.0.1:8081/ml-predictions');
+    
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    
+    const data = await response.json();
+    console.log('📊 ML predictions data received:', data);
+    
+    // Convert the current API format to the required format
+    const predictions = [];
+    
+    // Process earthquake predictions
+    if (data.earthquake_predictions) {
+      Object.entries(data.earthquake_predictions).forEach(([location, prediction]) => {
+        if (prediction && prediction.coordinates && prediction.prediction) {
+          predictions.push({
+            location: location,
+            lat: prediction.coordinates.lat,
+            lon: prediction.coordinates.lon,
+            disaster_type: "earthquake",
+            risk_level: prediction.prediction.risk_level.toLowerCase(),
+            probability: prediction.prediction.probability,
+            confidence: prediction.prediction.confidence
+          });
+        }
+      });
+    }
+    
+    // Process flood predictions
+    if (data.flood_predictions) {
+      Object.entries(data.flood_predictions).forEach(([location, prediction]) => {
+        if (prediction && prediction.coordinates && prediction.prediction) {
+          predictions.push({
+            location: location,
+            lat: prediction.coordinates.lat,
+            lon: prediction.coordinates.lon,
+            disaster_type: "flood",
+            risk_level: prediction.prediction.risk_level.toLowerCase(),
+            probability: prediction.prediction.probability,
+            confidence: prediction.prediction.confidence
+          });
+        }
+      });
+    }
+    
+    console.log('📊 Converted predictions:', predictions);
+    
+    if (predictions.length > 0) {
+      plotMLPredictions(predictions);
+      return predictions;
+    } else {
+      console.log('⚠️ No prediction data found in response');
+      return null;
+    }
+  } catch (error) {
+    console.error('❌ Error fetching ML predictions:', error);
+    
+    // Show a more user-friendly error message
+    if (error.message.includes('Failed to fetch')) {
+      alert('Disaster prediction service is not running. Please start the backend server on port 8081.');
+    } else {
+      alert('Failed to load disaster predictions. Please try again.');
+    }
+    
+    throw error;
+  }
+}
+
+function clearMLPredictionMarkers() {
+  mlPredictionMarkers.forEach(marker => marker.setMap(null));
+  mlPredictionMarkers = [];
+}
+
+function plotMLPredictions(predictions) {
+  console.log('📊 Plotting ML predictions:', predictions);
+  clearMLPredictionMarkers();
+  
+  let markersPlotted = 0;
+  
+  // Process each prediction in the array
+  predictions.forEach(prediction => {
+    console.log(`Processing ${prediction.disaster_type} prediction for ${prediction.location}:`, prediction);
+    
+    // Create marker for this prediction
+    const marker = createDisasterMarker(prediction);
+    if (marker) {
+      mlPredictionMarkers.push(marker);
+      markersPlotted++;
+      console.log(`✅ Marker created for ${prediction.location} - ${prediction.disaster_type} (${prediction.risk_level})`);
+    }
+  });
+  
+  // Show map legend
+  const mapLegend = document.getElementById('mapLegend');
+  if (mapLegend) {
+    mapLegend.style.display = 'block';
+  }
+  
+  console.log('✅ Total markers plotted:', markersPlotted);
+}
+
+// Test function for debugging
+window.testDisasterPredictions = async function() {
+  console.log('🧪 Testing disaster predictions...');
+  try {
+    const predictions = await fetchMLPredictions();
+    console.log('🧪 Test completed. Predictions:', predictions);
+    return predictions;
+  } catch (error) {
+    console.error('🧪 Test failed:', error);
+    return null;
+  }
+};
+
+function createDisasterMarker(prediction) {
+  const { location, lat, lon, disaster_type, risk_level } = prediction;
+  
+  // Add offset to separate flood and earthquake markers
+  const offsetLat = disaster_type === 'flood' ? 0.02 : 0;
+  const offsetLon = disaster_type === 'flood' ? 0.02 : 0;
+  
+  const finalCoords = {
+    lat: lat + offsetLat,
+    lng: lon + offsetLon
+  };
+  
+  console.log(`🎯 Creating marker for ${location}: ${disaster_type} ${risk_level} risk at (${finalCoords.lat}, ${finalCoords.lng})`);
+  
+  // Create marker icon based on disaster type and risk level
+  const markerSize = risk_level === 'high' ? 60 : risk_level === 'medium' ? 50 : 40;
+  const markerColor = disaster_type === 'flood' 
+    ? (risk_level === 'high' ? '#1e40af' : risk_level === 'medium' ? '#3b82f6' : '#60a5fa')
+    : (risk_level === 'high' ? '#dc2626' : risk_level === 'medium' ? '#f59e0b' : '#f97316');
+  
+  const riskNumber = risk_level === 'high' ? 3 : risk_level === 'medium' ? 2 : 1;
+  
+  const icon = {
+    url: `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(`
+      <svg xmlns="http://www.w3.org/2000/svg" width="${markerSize}" height="${markerSize}" viewBox="0 0 ${markerSize} ${markerSize}">
+        <defs>
+          <filter id="glow">
+            <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+            <feMerge> 
+              <feMergeNode in="coloredBlur"/>
+              <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+          </filter>
+          <radialGradient id="grad" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" style="stop-color:${markerColor};stop-opacity:0.9" />
+            <stop offset="100%" style="stop-color:${markerColor};stop-opacity:0.6" />
+          </radialGradient>
+        </defs>
+        <circle cx="${markerSize/2}" cy="${markerSize/2}" r="${markerSize/2 - 2}" 
+                fill="url(#grad)" stroke="white" stroke-width="2" filter="url(#glow)"/>
+        <text x="50%" y="50%" text-anchor="middle" dy="0.35em" 
+              font-family="Arial, sans-serif" font-size="${markerSize/3}" 
+              font-weight="bold" fill="white">${riskNumber}</text>
+      </svg>
+    `)}`,
+    scaledSize: new google.maps.Size(markerSize, markerSize),
+    anchor: new google.maps.Point(markerSize/2, markerSize/2)
+  };
+  
+  const marker = new google.maps.Marker({
+    position: finalCoords,
+    map: map,
+    icon: icon,
+    title: `${location} - ${disaster_type} ${risk_level} risk`
+  });
+  
+  // Create info window content
+  const infoHtml = `
+    <div style="max-width: 320px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: white; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.15); overflow: hidden;">
+      <div style="padding: 20px; background: linear-gradient(135deg, ${markerColor}15, ${markerColor}05);">
+        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+          <div style="width: 40px; height: 40px; border-radius: 50%; background: ${markerColor}; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 16px;">${riskNumber}</div>
+          <div>
+            <h3 style="margin: 0; color: ${markerColor}; font-size: 18px; font-weight: 700;">${disaster_type.charAt(0).toUpperCase() + disaster_type.slice(1)} Prediction</h3>
+            <p style="margin: 4px 0 0 0; color: #6b7280; font-size: 12px; font-weight: 500;">AI-Powered Risk Assessment</p>
+          </div>
+        </div>
+        
+        <div style="background: #f8f9fa; border-radius: 10px; padding: 16px; margin-bottom: 16px;">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; font-size: 14px;">
+            <div>
+              <span style="color: #6b7280; font-weight: 500;">Location:</span><br>
+              <span style="color: #212529; font-weight: 600;">${location}</span>
+            </div>
+            <div>
+              <span style="color: #6b7280; font-weight: 500;">Risk Level:</span><br>
+              <span style="color: ${markerColor}; font-weight: 600; text-transform: uppercase;">${risk_level} (${riskNumber})</span>
+            </div>
+            <div>
+              <span style="color: #6b7280; font-weight: 500;">Probability:</span><br>
+              <span style="color: #212529; font-weight: 600;">${Math.round((prediction.probability || 0.5) * 100)}%</span>
+            </div>
+            <div>
+              <span style="color: #6b7280; font-weight: 500;">Type:</span><br>
+              <span style="color: #212529; font-weight: 600; text-transform: capitalize;">${disaster_type}</span>
+            </div>
+            <div>
+              <span style="color: #6b7280; font-weight: 500;">Confidence:</span><br>
+              <span style="color: #212529; font-weight: 600;">${prediction.confidence > 0.7 ? 'High' : prediction.confidence > 0.4 ? 'Medium' : 'Low'}</span>
+            </div>
+            <div>
+              <span style="color: #6b7280; font-weight: 500;">Period:</span><br>
+              <span style="color: #212529; font-weight: 600;">Next 7 days</span>
+            </div>
+          </div>
+        </div>
+        
+        <div style="background: #e3f2fd; border-radius: 8px; padding: 12px; border-left: 4px solid #2196f3;">
+          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+            <span style="font-size: 16px;">💡</span>
+            <span style="color: #1976d2; font-weight: 600; font-size: 14px;">Important Notice</span>
+          </div>
+          <p style="margin: 0; color: #424242; font-size: 12px; line-height: 1.4;">
+            This prediction is based on current weather conditions and historical data. Always follow local authorities' guidance and stay informed about official weather alerts.
+          </p>
+        </div>
+      </div>
+    </div>
+  `;
+  
+  const infoWindow = new google.maps.InfoWindow({
+    content: infoHtml
+  });
+  
+  marker.addListener('click', () => {
+    // Close any existing info window
+    if (currentInfoWindow) {
+      currentInfoWindow.close();
+    }
+    
+    infoWindow.open(map, marker);
+    currentInfoWindow = infoWindow;
+    
+    // Add close button functionality
+    setTimeout(() => {
+      const closeBtn = document.querySelector('.gm-style-iw-c .gm-style-iw-d div[style*="position: absolute"]');
+      if (closeBtn) {
+        closeBtn.addEventListener('click', () => {
+          infoWindow.close();
+          currentInfoWindow = null;
+        });
+      }
+    }, 100);
+  });
+  
+  return marker;
+}
+
+function plotMLPredictionMarker(location, prediction, type) {
+  const coordinates = {
+    'Hunza Valley': { lat: 36.3167, lng: 74.65 },
+    'Naran': { lat: 34.9069, lng: 73.6556 },
+    'Fairy Meadows': { lat: 35.4167, lng: 74.5833 },
+    'Swat': { lat: 34.7717, lng: 72.36 },
+    'Chitral': { lat: 35.8511, lng: 71.7864 },
+    'Skardu': { lat: 35.2976, lng: 75.6337 },
+    'Neelam Valley': { lat: 34.6281, lng: 73.911 }
+  };
+  
+  const coords = coordinates[location];
+  if (!coords) return;
+  
+  // Add offset to separate flood and earthquake markers
+  const offsetLat = type === 'flood' ? 0.02 : 0;
+  const offsetLon = type === 'flood' ? 0.02 : 0;
+  
+  const finalCoords = {
+    lat: coords.lat + offsetLat,
+    lng: coords.lng + offsetLon
+  };
+  
+  const riskLevel = prediction.risk_level;
+  const riskNumber = riskLevel === 'HIGH' ? 3 : riskLevel === 'MEDIUM' ? 2 : 1;
+  
+  console.log(`🎯 Plotting marker for ${location}: ${type} ${riskLevel} risk at (${finalCoords.lat}, ${finalCoords.lng})`);
+  
+  // Create glowing circular marker
+  const markerSize = riskLevel === 'HIGH' ? 60 : riskLevel === 'MEDIUM' ? 50 : 40;
+  const markerColor = type === 'flood' 
+    ? (riskLevel === 'HIGH' ? '#1e40af' : riskLevel === 'MEDIUM' ? '#3b82f6' : '#60a5fa')
+    : (riskLevel === 'HIGH' ? '#dc2626' : riskLevel === 'MEDIUM' ? '#f59e0b' : '#f97316');
+  
+  console.log(`🎨 Marker color: ${markerColor}, size: ${markerSize}, type: ${type}`);
+  
+  const icon = {
+    url: `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(`
+      <svg xmlns="http://www.w3.org/2000/svg" width="${markerSize}" height="${markerSize}" viewBox="0 0 ${markerSize} ${markerSize}">
+        <defs>
+          <filter id="glow-${type}-${riskLevel}" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+            <feMerge> 
+              <feMergeNode in="coloredBlur"/>
+              <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+          </filter>
+          <radialGradient id="grad-${type}-${riskLevel}" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" style="stop-color:${markerColor};stop-opacity:1" />
+            <stop offset="70%" style="stop-color:${markerColor};stop-opacity:0.9" />
+            <stop offset="100%" style="stop-color:${markerColor};stop-opacity:0.7" />
+          </radialGradient>
+        </defs>
+        <circle cx="${markerSize/2}" cy="${markerSize/2}" r="${markerSize/2 - 6}" 
+                fill="url(#grad-${type}-${riskLevel})" stroke="white" stroke-width="4" 
+                filter="url(#glow-${type}-${riskLevel})"/>
+        <text x="50%" y="50%" text-anchor="middle" dy="0.35em" 
+              font-family="Arial, sans-serif" font-size="${markerSize/2.5}" 
+              font-weight="bold" fill="white" stroke="black" stroke-width="1">${riskNumber}</text>
+      </svg>
+    `)}`,
+    scaledSize: new google.maps.Size(markerSize, markerSize),
+    anchor: new google.maps.Point(markerSize/2, markerSize/2)
+  };
+  
+  const marker = new google.maps.Marker({
+    position: finalCoords,
+    map: map,
+    icon: icon,
+    title: `${location} - ${type} ${riskLevel} risk`
+  });
+  
+  console.log(`📍 Marker created for ${location}:`, marker);
+  
+  const infoHtml = `
+    <div style="max-width: 320px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: white; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.15); overflow: hidden;">
+      <div style="position: relative; padding: 20px 20px 16px 20px;">
+        <div style="position: absolute; top: 12px; right: 12px; cursor: pointer; color: #666; font-size: 18px; font-weight: bold;">×</div>
+        
+        <div style="display: flex; align-items: center; margin-bottom: 16px;">
+          <div style="width: 48px; height: 48px; border-radius: 50%; background: ${markerColor}; display: flex; align-items: center; justify-content: center; margin-right: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+            <span style="color: white; font-weight: bold; font-size: 18px;">${riskNumber}</span>
+          </div>
+          <div>
+            <h3 style="margin: 0; color: ${markerColor}; font-size: 18px; font-weight: 700; line-height: 1.2;">${type === 'flood' ? 'Flood Prediction' : 'Earthquake Prediction'}</h3>
+            <p style="margin: 4px 0 0 0; color: #666; font-size: 13px; font-weight: 400;">AI-Powered Risk Assessment</p>
+          </div>
+        </div>
+        
+        <div style="background: #f8f9fa; padding: 16px; border-radius: 10px; margin-bottom: 16px; border: 1px solid #e9ecef;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; padding-bottom: 6px; border-bottom: 1px solid #e9ecef;">
+            <span style="color: #495057; font-size: 14px; font-weight: 500;">Location:</span>
+            <span style="color: #212529; font-weight: 600; font-size: 14px;">${location}</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; padding-bottom: 6px; border-bottom: 1px solid #e9ecef;">
+            <span style="color: #495057; font-size: 14px; font-weight: 500;">Risk Level:</span>
+            <span style="color: ${markerColor}; font-weight: 700; font-size: 14px; text-transform: uppercase;">${riskLevel}</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; padding-bottom: 6px; border-bottom: 1px solid #e9ecef;">
+            <span style="color: #495057; font-size: 14px; font-weight: 500;">Probability:</span>
+            <span style="color: #212529; font-weight: 600; font-size: 14px;">${Math.round((prediction.probability || 0.5) * 100)}%</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; padding-bottom: 6px; border-bottom: 1px solid #e9ecef;">
+            <span style="color: #495057; font-size: 14px; font-weight: 500;">Confidence:</span>
+            <span style="color: #212529; font-weight: 600; font-size: 14px;">${prediction.confidence > 0.7 ? 'High' : prediction.confidence > 0.4 ? 'Medium' : 'Low'}</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span style="color: #495057; font-size: 14px; font-weight: 500;">Period:</span>
+            <span style="color: #212529; font-weight: 600; font-size: 14px;">Next 7 days</span>
+          </div>
+        </div>
+        
+        <div style="background: #e3f2fd; padding: 12px; border-radius: 8px; border-left: 4px solid #2196f3;">
+          <div style="display: flex; align-items: flex-start;">
+            <span style="margin-right: 10px; font-size: 16px; margin-top: 2px;">💡</span>
+            <span style="color: #1976d2; font-size: 13px; line-height: 1.5; font-weight: 400;">
+              This prediction is based on current weather patterns, geological data, and historical trends. Always follow official emergency services guidance.
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+  
+  const infoWindow = new google.maps.InfoWindow({
+    content: infoHtml
+  });
+  
+  marker.addListener('click', () => {
+    if (currentInfoWindow) {
+      currentInfoWindow.close();
+    }
+    infoWindow.open(map, marker);
+    currentInfoWindow = infoWindow;
+    
+    // Add close button functionality
+    setTimeout(() => {
+      const closeBtn = document.querySelector('.gm-style-iw-c .gm-style-iw-d div[style*="position: absolute"]');
+      if (closeBtn) {
+        closeBtn.addEventListener('click', () => {
+          infoWindow.close();
+        });
+      }
+    }, 100);
+  });
+  
+  mlPredictionMarkers.push(marker);
+  console.log('✅ Marker added to array. Total markers:', mlPredictionMarkers.length);
+  
+  if (type === 'flood') {
+    console.log(`🌊 Flood marker plotted for ${location}: ${riskLevel} risk`);
+  } else {
+    console.log(`🌍 Earthquake marker plotted for ${location}: ${riskLevel} risk`);
+  }
+}
+
+// Test functions
+window.testMLPredictions = fetchMLPredictions;
+window.testDisasterButtons = function() {
+  console.log('🧪 Testing disaster buttons...');
+  const predictBtn = document.getElementById('predictDisasterBtn');
+  const reportBtn = document.getElementById('reportBtn');
+  
+  console.log('Predict button found:', !!predictBtn);
+  console.log('Report button found:', !!reportBtn);
+  
+  if (predictBtn) {
+    console.log('Clicking Predict Disaster button...');
+    predictBtn.click();
+  }
+  
+  if (reportBtn) {
+    console.log('Clicking Report button...');
+    reportBtn.click();
+  }
+};
+
+// Test function to create fake markers
+window.testFakeMarkers = function() {
+  console.log('🧪 Creating fake test markers...');
+  clearMLPredictionMarkers();
+  
+  // Create fake flood prediction
+  const fakeFloodPrediction = {
+    risk_level: 'HIGH',
+    confidence: 0.8
+  };
+  plotMLPredictionMarker('Hunza Valley', fakeFloodPrediction, 'flood');
+  
+  // Create fake earthquake prediction
+  const fakeEarthquakePrediction = {
+    risk_level: 'MEDIUM',
+    confidence: 0.6
+  };
+  plotMLPredictionMarker('Naran', fakeEarthquakePrediction, 'earthquake');
+  
+  // Show map legend
+  const mapLegend = document.getElementById('mapLegend');
+  if (mapLegend) {
+    mapLegend.style.display = 'block';
+  }
+  
+  console.log('✅ Fake markers created:', mlPredictionMarkers.length);
+};
+
+// Test function to fetch real data and debug
+window.testRealData = async function() {
+  console.log('🧪 Testing real API data...');
+  try {
+    const response = await fetch('http://127.0.0.1:8081/ml-predictions');
+    const data = await response.json();
+    console.log('📊 Raw API data:', data);
+    
+    // Test with first earthquake prediction
+    const firstLocation = Object.keys(data.earthquake_predictions)[0];
+    const firstPrediction = data.earthquake_predictions[firstLocation];
+    console.log(`🎯 Testing with ${firstLocation}:`, firstPrediction);
+    
+    if (firstPrediction && firstPrediction.prediction && firstPrediction.prediction.risk_level) {
+      clearMLPredictionMarkers();
+      plotMLPredictionMarker(firstLocation, firstPrediction.prediction, 'earthquake');
+      console.log('✅ Real marker created for:', firstLocation);
+    } else {
+      console.log('❌ Invalid prediction structure');
+    }
+  } catch (error) {
+    console.error('❌ Error testing real data:', error);
+  }
+};
+  </script>
+
+<script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDJvDcdmau-Jt93UhPI7xjy-CQ0cLh-wqc&callback=initMap">
+  </script>
+</body>
+</html>

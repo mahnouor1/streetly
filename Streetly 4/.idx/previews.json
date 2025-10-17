@@ -1,0 +1,9 @@
+{
+  "previews": [
+    {
+      "manager": "simple-http-server",
+      "port": 8080,
+      "name": "Static Preview"
+    }
+  ]
+}
