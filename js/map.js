@@ -34,24 +34,32 @@ function initMap() {
 // Fetch weather by city name
 async function getWeather(city) {
   try {
-    // Use OpenWeather API directly
-    const res = await fetch(`${CONFIG.OPENWEATHER_BASE_URL}/weather?q=${city}&appid=${CONFIG.OPENWEATHER_API_KEY}&units=metric`);
-    const data = await res.json();
-    
-    if (data.cod === 200) {
-      const weatherData = {
-        city: data.name,
-        temp: Math.round(data.main.temp),
-        condition: data.weather[0].description
-      };
-      console.log("Weather data:", weatherData);
-      alert(`🌤 Weather in ${city}: ${weatherData.temp}°C, ${weatherData.condition}`);
-      return weatherData;
-    } else {
-      throw new Error(data.message || "Weather data not found");
+    // Use real-time weather API from Vercel serverless function
+    const response = await fetch("https://streetly.vercel.app/api/weather");
+    const data = await response.json();
+
+    if (data.success && data.data) {
+      // Find weather data for the specific city
+      const locationWeather = data.data.find(loc => 
+        loc.location.toLowerCase().includes(city.toLowerCase()) ||
+        city.toLowerCase().includes(loc.location.toLowerCase())
+      );
+      
+      if (locationWeather) {
+        const weatherData = {
+          city: locationWeather.location,
+          temp: Math.round(locationWeather.temperature),
+          condition: locationWeather.condition
+        };
+        console.log("Real-time weather data:", weatherData);
+        alert(`🌤 Weather in ${city}: ${weatherData.temp}°C, ${weatherData.condition}`);
+        return weatherData;
+      }
     }
+    
+    throw new Error("Real-time weather not available");
   } catch (err) {
-    console.error("Weather fetch failed, using fallback:", err);
+    console.error("Real-time weather failed, using fallback:", err);
     // Use fallback weather data
     const fallbackWeather = getFallbackWeather(city);
     alert(`🌤 Weather in ${city}: ${fallbackWeather.temp}°C, ${fallbackWeather.condition}`);

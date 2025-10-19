@@ -21,25 +21,28 @@ export class APIManager {
 
     async getWeather(city) {
         try {
-            // Use OpenWeather API directly
-            const cityData = this.cityCoordinates[city];
-            if (!cityData) {
-                return { temperature: "N/A", condition: "Unknown" };
+            // Use real-time weather API from Vercel serverless function
+            const response = await fetch("https://streetly.vercel.app/api/weather");
+            const data = await response.json();
+
+            if (data.success && data.data) {
+                // Find weather data for the specific city
+                const locationWeather = data.data.find(loc => 
+                    loc.location.toLowerCase().includes(city.toLowerCase()) ||
+                    city.toLowerCase().includes(loc.location.toLowerCase())
+                );
+                
+                if (locationWeather) {
+                    return {
+                        temperature: Math.round(locationWeather.temperature),
+                        condition: locationWeather.condition
+                    };
+                }
             }
             
-            const res = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${cityData.lat}&lon=${cityData.lon}&appid=cd3d503156303b838b4f9b8db21c646c&units=metric`);
-            const data = await res.json();
-            
-            if (data.cod === 200) {
-                return {
-                    temperature: Math.round(data.main.temp),
-                    condition: data.weather[0].description
-                };
-            } else {
-                throw new Error(data.message || "Weather data not found");
-            }
+            throw new Error("Real-time weather not available");
         } catch (err) {
-            console.error("Weather fetch failed, using fallback:", err);
+            console.error("Real-time weather failed, using fallback:", err);
             // Use realistic fallback data for Northern Pakistan
             return this.getFallbackWeather(city);
         }

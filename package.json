@@ -1,26 +1,30 @@
 {
   "name": "streetly-travel-assistant",
   "version": "1.0.0",
-  "description": "AI-powered travel assistant for Pakistan with weather, maps, and disaster predictions",
-  "main": "Streetly 4/index.html",
+  "description": "A comprehensive travel assistant application for Streetly with real-time weather integration.",
+  "main": "index.html",
   "scripts": {
-    "build": "echo 'Static site - no build needed'",
-    "start": "echo 'Static site - no start needed'"
+    "start": "serve .",
+    "deploy:vercel": "vercel --prod",
+    "deploy:firebase": "firebase deploy --only hosting"
   },
   "keywords": [
     "travel",
+    "AI",
     "assistant",
-    "pakistan",
+    "map",
     "weather",
-    "maps",
-    "ai",
-    "disaster-prediction"
+    "firebase",
+    "vercel",
+    "real-time"
   ],
   "author": "Maha",
   "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/mahnouor1/streetly.git"
+  "dependencies": {
+    "node-fetch": "^2.6.7",
+    "serve": "^14.2.1"
   },
-  "homepage": "https://streetly.vercel.app"
+  "devDependencies": {
+    "vercel": "^32.0.0"
+  }
 }

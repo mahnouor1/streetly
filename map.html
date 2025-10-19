@@ -1053,7 +1053,7 @@ async function planTrip(){
     let weather = { temp: "N/A", feels_like: "N/A", condition: "Unknown", humidity: "N/A", wind_speed: "N/A" };
     if (API_BASE) {
       // Use backend if available (localhost)
-      const weatherRes=await fetch(`${API_BASE}/weather?city=${destination}`);
+    const weatherRes=await fetch(`${API_BASE}/weather?city=${destination}`);
       if (weatherRes.ok) {
         weather=await weatherRes.json();
       }
@@ -1072,14 +1072,15 @@ async function planTrip(){
       const coords = cityCoords[destination];
       if (coords) {
         try {
-          // Use the new weather API system
-          if (window.weatherAPI) {
-            weather = await window.weatherAPI.getWeatherByCoords(coords.lat, coords.lon);
+          // Use real-time weather API from Vercel serverless function
+          const weatherData = await fetchRealTimeWeather(destination);
+          if (weatherData) {
+            weather = weatherData;
           } else {
-            throw new Error("Weather API not available");
+            throw new Error("Real-time weather not available");
           }
         } catch (e) {
-          console.log("Weather API failed, using fallback data:", e);
+          console.log("Real-time weather failed, using fallback data:", e);
           // Use realistic fallback weather data for Northern Pakistan
           weather = generateFallbackWeather(destination, coords);
         }
@@ -1091,9 +1092,9 @@ async function planTrip(){
     if (budget && budget.trim() !== '') {
       if (API_BASE) {
         // Use backend if available (localhost)
-        const hotelRes=await fetch(`${API_BASE}/hotels?city=${destination}&budget=${budget}`);
+    const hotelRes=await fetch(`${API_BASE}/hotels?city=${destination}&budget=${budget}`);
         if (hotelRes.ok) {
-          hotels=await hotelRes.json();
+      hotels=await hotelRes.json();
         }
       } else {
         // Use static hotel data for external devices
@@ -1478,15 +1479,15 @@ async function fetchMLPredictions() {
     
     // Check if backend is available
     if (window.location.hostname === 'localhost') {
-      const response = await fetch('http://127.0.0.1:8081/ml-predictions');
-      
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      
-      const data = await response.json();
-      console.log('📊 ML predictions data received:', data);
-      
+    const response = await fetch('http://127.0.0.1:8081/ml-predictions');
+    
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    
+    const data = await response.json();
+    console.log('📊 ML predictions data received:', data);
+    
       // Process the data and plot
       const predictions = processMLPredictions(data);
       if (predictions.length > 0) {
@@ -1511,6 +1512,39 @@ async function fetchMLPredictions() {
     const predictions = processMLPredictions(fallbackData);
     plotMLPredictions(predictions);
     return predictions;
+  }
+}
+
+async function fetchRealTimeWeather(destination) {
+  try {
+    console.log("🌦 Fetching live weather data for", destination);
+    const response = await fetch("https://streetly.vercel.app/api/weather");
+    const data = await response.json();
+
+    if (data.success && data.data) {
+      // Find weather data for the specific destination
+      const locationWeather = data.data.find(loc => 
+        loc.location.toLowerCase().includes(destination.toLowerCase()) ||
+        destination.toLowerCase().includes(loc.location.toLowerCase())
+      );
+      
+      if (locationWeather) {
+        console.log("✅ Real-time weather received for", destination);
+        return {
+          temp: Math.round(locationWeather.temperature),
+          feels_like: Math.round(locationWeather.temperature - 2), // Approximate feels like
+          condition: locationWeather.condition,
+          humidity: locationWeather.humidity,
+          wind_speed: locationWeather.wind_speed
+        };
+      }
+    }
+    
+    console.log("⚠️ No real-time weather data found for", destination);
+    return null;
+  } catch (error) {
+    console.error("🚨 Real-time weather fetch error:", error);
+    return null;
   }
 }
 
@@ -1612,44 +1646,44 @@ function generateFallbackPredictions() {
 }
 
 function processMLPredictions(data) {
-  const predictions = [];
-  
-  // Process earthquake predictions
-  if (data.earthquake_predictions) {
-    Object.entries(data.earthquake_predictions).forEach(([location, prediction]) => {
-      if (prediction && prediction.coordinates && prediction.prediction) {
-        predictions.push({
-          location: location,
-          lat: prediction.coordinates.lat,
-          lon: prediction.coordinates.lon,
-          disaster_type: "earthquake",
-          risk_level: prediction.prediction.risk_level.toLowerCase(),
-          probability: prediction.prediction.probability,
-          confidence: prediction.prediction.confidence
-        });
-      }
-    });
-  }
-  
-  // Process flood predictions
-  if (data.flood_predictions) {
-    Object.entries(data.flood_predictions).forEach(([location, prediction]) => {
-      if (prediction && prediction.coordinates && prediction.prediction) {
-        predictions.push({
-          location: location,
-          lat: prediction.coordinates.lat,
-          lon: prediction.coordinates.lon,
-          disaster_type: "flood",
-          risk_level: prediction.prediction.risk_level.toLowerCase(),
-          probability: prediction.prediction.probability,
-          confidence: prediction.prediction.confidence
-        });
-      }
-    });
-  }
-  
-  console.log('📊 Converted predictions:', predictions);
-  return predictions;
+    const predictions = [];
+    
+    // Process earthquake predictions
+    if (data.earthquake_predictions) {
+      Object.entries(data.earthquake_predictions).forEach(([location, prediction]) => {
+        if (prediction && prediction.coordinates && prediction.prediction) {
+          predictions.push({
+            location: location,
+            lat: prediction.coordinates.lat,
+            lon: prediction.coordinates.lon,
+            disaster_type: "earthquake",
+            risk_level: prediction.prediction.risk_level.toLowerCase(),
+            probability: prediction.prediction.probability,
+            confidence: prediction.prediction.confidence
+          });
+        }
+      });
+    }
+    
+    // Process flood predictions
+    if (data.flood_predictions) {
+      Object.entries(data.flood_predictions).forEach(([location, prediction]) => {
+        if (prediction && prediction.coordinates && prediction.prediction) {
+          predictions.push({
+            location: location,
+            lat: prediction.coordinates.lat,
+            lon: prediction.coordinates.lon,
+            disaster_type: "flood",
+            risk_level: prediction.prediction.risk_level.toLowerCase(),
+            probability: prediction.prediction.probability,
+            confidence: prediction.prediction.confidence
+          });
+        }
+      });
+    }
+    
+    console.log('📊 Converted predictions:', predictions);
+      return predictions;
 }
 
 function clearMLPredictionMarkers() {
@@ -2072,12 +2106,12 @@ window.testRealData = async function() {
 
     <!-- Weather API Integration -->
     <script src="js/weather-api.js"></script>
-    
-    <!-- ML Predictions Integration -->
-    <script src="js/map_ml.js"></script>
 
-    <script async defer
-        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDJvDcdmau-Jt93UhPI7xjy-CQ0cLh-wqc&callback=initMap">
-      </script>
+<!-- ML Predictions Integration -->
+<script src="js/map_ml.js"></script>
+
+<script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDJvDcdmau-Jt93UhPI7xjy-CQ0cLh-wqc&callback=initMap">
+  </script>
 </body>
 </html>
