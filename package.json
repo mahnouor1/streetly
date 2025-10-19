@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "description": "A comprehensive travel assistant application for Streetly with real-time weather integration.",
   "main": "index.html",
-  "type": "module",
   "scripts": {
     "start": "serve .",
     "deploy:vercel": "vercel --prod",
