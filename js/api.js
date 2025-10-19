@@ -47,16 +47,16 @@ export class APIManager {
     
     getFallbackWeather(city) {
         const weatherData = {
-            "Hunza Valley": { temperature: 15, condition: "Clear sky" },
-            "Naran": { temperature: 8, condition: "Partly cloudy" },
-            "Fairy Meadows": { temperature: 5, condition: "Clear sky" },
-            "Swat": { temperature: 22, condition: "Sunny" },
-            "Chitral": { temperature: 18, condition: "Clear sky" },
-            "Skardu": { temperature: 12, condition: "Partly cloudy" },
-            "Neelam Valley": { temperature: 16, condition: "Clear sky" }
+            "Hunza Valley": { temperature: -6, condition: "Clear sky" },
+            "Naran": { temperature: -12, condition: "Snow" },
+            "Fairy Meadows": { temperature: -15, condition: "Clear sky" },
+            "Swat": { temperature: 2, condition: "Partly cloudy" },
+            "Chitral": { temperature: -3, condition: "Clear sky" },
+            "Skardu": { temperature: -8, condition: "Clear sky" },
+            "Neelam Valley": { temperature: -4, condition: "Clear sky" }
         };
         
-        return weatherData[city] || { temperature: 15, condition: "Clear sky" };
+        return weatherData[city] || { temperature: -6, condition: "Clear sky" };
     }
 
   getCityInfo(city) {

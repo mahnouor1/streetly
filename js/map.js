@@ -61,16 +61,16 @@ async function getWeather(city) {
 
 function getFallbackWeather(city) {
   const weatherData = {
-    "Hunza Valley": { temp: 15, condition: "Clear sky" },
-    "Naran": { temp: 8, condition: "Partly cloudy" },
-    "Fairy Meadows": { temp: 5, condition: "Clear sky" },
-    "Swat": { temp: 22, condition: "Sunny" },
-    "Chitral": { temp: 18, condition: "Clear sky" },
-    "Skardu": { temp: 12, condition: "Partly cloudy" },
-    "Neelam Valley": { temp: 16, condition: "Clear sky" }
+    "Hunza Valley": { temp: -6, condition: "Clear sky" },
+    "Naran": { temp: -12, condition: "Snow" },
+    "Fairy Meadows": { temp: -15, condition: "Clear sky" },
+    "Swat": { temp: 2, condition: "Partly cloudy" },
+    "Chitral": { temp: -3, condition: "Clear sky" },
+    "Skardu": { temp: -8, condition: "Clear sky" },
+    "Neelam Valley": { temp: -4, condition: "Clear sky" }
   };
   
-  return weatherData[city] || { temp: 15, condition: "Clear sky" };
+  return weatherData[city] || { temp: -6, condition: "Clear sky" };
 }
 
 // Fetch weather by coordinates
@@ -97,15 +97,15 @@ async function getWeatherByCoords(lat, lon) {
 }
 
 function getFallbackWeatherByCoords(lat, lon) {
-  // Determine location based on coordinates
-  if (lat > 36 && lon > 74) return { city: "Hunza Valley", temp: 15, condition: "Clear sky" };
-  if (lat > 35 && lon > 75) return { city: "Skardu", temp: 12, condition: "Partly cloudy" };
-  if (lat > 34 && lon > 73) return { city: "Naran", temp: 8, condition: "Partly cloudy" };
-  if (lat > 35 && lon > 72) return { city: "Swat", temp: 22, condition: "Sunny" };
-  if (lat > 35 && lon > 71) return { city: "Chitral", temp: 18, condition: "Clear sky" };
-  if (lat > 34 && lon > 73) return { city: "Neelam Valley", temp: 16, condition: "Clear sky" };
+  // Determine location based on coordinates (winter weather)
+  if (lat > 36 && lon > 74) return { city: "Hunza Valley", temp: -6, condition: "Clear sky" };
+  if (lat > 35 && lon > 75) return { city: "Skardu", temp: -8, condition: "Clear sky" };
+  if (lat > 34 && lon > 73) return { city: "Naran", temp: -12, condition: "Snow" };
+  if (lat > 35 && lon > 72) return { city: "Swat", temp: 2, condition: "Partly cloudy" };
+  if (lat > 35 && lon > 71) return { city: "Chitral", temp: -3, condition: "Clear sky" };
+  if (lat > 34 && lon > 73) return { city: "Neelam Valley", temp: -4, condition: "Clear sky" };
   
-  return { city: "Northern Pakistan", temp: 15, condition: "Clear sky" };
+  return { city: "Northern Pakistan", temp: -6, condition: "Clear sky" };
 }
 
 // Calculate and display route using user’s current location

@@ -1525,66 +1525,66 @@ async function fetchMLPredictions() {
 function generateFallbackWeather(destination, coords) {
   console.log("🌤️ Generating fallback weather for", destination);
   
-  // Realistic weather data for Northern Pakistan locations
+  // Realistic winter weather data for Northern Pakistan locations (January 2025)
   const weatherData = {
     "Hunza Valley": {
-      temp: 15,
-      feels_like: 12,
-      condition: "Clear sky",
-      humidity: 45,
-      wind_speed: 2.5
-    },
-    "Naran": {
-      temp: 8,
-      feels_like: 5,
-      condition: "Partly cloudy",
-      humidity: 60,
-      wind_speed: 3.2
-    },
-    "Fairy Meadows": {
-      temp: 5,
-      feels_like: 2,
-      condition: "Clear sky",
-      humidity: 55,
-      wind_speed: 4.1
-    },
-    "Swat": {
-      temp: 22,
-      feels_like: 20,
-      condition: "Sunny",
-      humidity: 40,
-      wind_speed: 1.8
-    },
-    "Chitral": {
-      temp: 18,
-      feels_like: 16,
+      temp: -6,
+      feels_like: -10,
       condition: "Clear sky",
       humidity: 35,
-      wind_speed: 2.8
+      wind_speed: 4.2
+    },
+    "Naran": {
+      temp: -12,
+      feels_like: -16,
+      condition: "Snow",
+      humidity: 70,
+      wind_speed: 5.8
+    },
+    "Fairy Meadows": {
+      temp: -15,
+      feels_like: -20,
+      condition: "Clear sky",
+      humidity: 40,
+      wind_speed: 6.5
+    },
+    "Swat": {
+      temp: 2,
+      feels_like: -2,
+      condition: "Partly cloudy",
+      humidity: 55,
+      wind_speed: 3.1
+    },
+    "Chitral": {
+      temp: -3,
+      feels_like: -7,
+      condition: "Clear sky",
+      humidity: 30,
+      wind_speed: 4.8
     },
     "Skardu": {
-      temp: 12,
-      feels_like: 9,
-      condition: "Partly cloudy",
-      humidity: 50,
-      wind_speed: 3.5
+      temp: -8,
+      feels_like: -12,
+      condition: "Clear sky",
+      humidity: 45,
+      wind_speed: 5.2
     },
     "Neelam Valley": {
-      temp: 16,
-      feels_like: 14,
+      temp: -4,
+      feels_like: -8,
       condition: "Clear sky",
-      humidity: 48,
-      wind_speed: 2.2
+      humidity: 42,
+      wind_speed: 3.8
     }
   };
   
-  // Return specific data for destination or default
+  // Return specific data for destination or default (winter)
   return weatherData[destination] || {
-    temp: 15,
-    feels_like: 12,
+    temp: -6,
+    feels_like: -10,
     condition: "Clear sky",
-    humidity: 45,
-    wind_speed: 2.5
+    humidity: 35,
+    wind_speed: 4.2
   };
 }
 
