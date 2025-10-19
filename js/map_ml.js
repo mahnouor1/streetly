@@ -82,7 +82,8 @@ async function fetchMLPredictions() {
         
     } catch (error) {
         console.error("❌ Error fetching ML predictions:", error);
-        return [];
+        console.log("🔄 Using fallback predictions due to error");
+        return generateFallbackPredictions();
     }
 }
 
@@ -413,50 +414,56 @@ function plotDisasterEventMarker(event) {
 function generateFallbackPredictions() {
     console.log("🔄 Generating fallback ML predictions...");
     
-    // Sample predictions for Northern Pakistan locations
-    const fallbackData = {
-        earthquake_predictions: {
-            "Hunza Valley": {
-                latitude: 36.3167,
-                longitude: 74.65,
-                risk_level: "low",
-                probability: 0.2,
-                confidence: 0.8
-            },
-            "Skardu": {
-                latitude: 35.2979,
-                longitude: 75.6333,
-                risk_level: "medium",
-                probability: 0.4,
-                confidence: 0.7
-            },
-            "Naran": {
-                latitude: 34.91,
-                longitude: 73.6522,
-                risk_level: "low",
-                probability: 0.3,
-                confidence: 0.6
-            }
+    // Return array of predictions directly (not nested object)
+    const predictions = [
+        {
+            type: 'earthquake',
+            location: 'Hunza Valley',
+            latitude: 36.3167,
+            longitude: 74.65,
+            risk: 'low',
+            probability: 0.2,
+            confidence: 0.8
         },
-        flood_predictions: {
-            "Swat Valley": {
-                latitude: 35.2228,
-                longitude: 72.4258,
-                risk_level: "medium",
-                probability: 0.5,
-                confidence: 0.7
-            },
-            "Neelum Valley": {
-                latitude: 34.5869,
-                longitude: 73.9014,
-                risk_level: "high",
-                probability: 0.7,
-                confidence: 0.8
-            }
+        {
+            type: 'earthquake',
+            location: 'Skardu',
+            latitude: 35.2979,
+            longitude: 75.6333,
+            risk: 'medium',
+            probability: 0.4,
+            confidence: 0.7
+        },
+        {
+            type: 'earthquake',
+            location: 'Naran',
+            latitude: 34.91,
+            longitude: 73.6522,
+            risk: 'low',
+            probability: 0.3,
+            confidence: 0.6
+        },
+        {
+            type: 'flood',
+            location: 'Swat Valley',
+            latitude: 35.2228,
+            longitude: 72.4258,
+            risk: 'medium',
+            probability: 0.5,
+            confidence: 0.7
+        },
+        {
+            type: 'flood',
+            location: 'Neelum Valley',
+            latitude: 34.5869,
+            longitude: 73.9014,
+            risk: 'high',
+            probability: 0.7,
+            confidence: 0.8
         }
-    };
+    ];
     
-    return fallbackData;
+    return predictions;
 }
 
 // Initialize ML predictions when map is ready
