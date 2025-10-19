@@ -1,6 +1,7 @@
 // js/map_ml.js - ML Disaster Predictions Integration
-let mlPredictionMarkers = [];
-let currentInfoWindow = null;
+(() => {
+  let mlPredictionMarkers = [];
+  let currentInfoWindow = null;
 
 // ML Prediction API Configuration
 const ML_API_BASE = window.location.hostname === 'localhost' ? "http://localhost:8081" : null;
@@ -469,3 +470,5 @@ window.handlePredictDisaster = handlePredictDisaster;
 window.plotMLPredictions = plotMLPredictions;
 window.clearMLPredictionMarkers = clearMLPredictionMarkers;
 window.startMLPredictions = startMLPredictions;
+
+})(); // End IIFE
