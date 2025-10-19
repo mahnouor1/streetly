@@ -1144,21 +1144,48 @@ function sendMessage() {
   appendMessage('user', message);
   input.value = '';
   
-  // Send to backend
-  fetch(`${API_BASE}/chat`, {
+  // Send to Gemini API
+  fetch('https://streetly.vercel.app/api/gemini', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ message: message })
+    body: JSON.stringify({ 
+      message: message,
+      city: 'Pakistan'
+    })
   })
-  .then(response => response.json())
+  .then(response => {
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    return response.json();
+  })
   .then(data => {
-    appendMessage('bot', data.reply);
+    if (data.success) {
+      appendMessage('bot', data.reply);
+    } else {
+      throw new Error(data.message || 'Invalid response');
+    }
   })
   .catch(error => {
     console.error('Error:', error);
-    appendMessage('bot', 'Sorry, I\'m having trouble connecting right now. Please try again.');
+    
+    // Enhanced fallback responses
+    const lowerMessage = message.toLowerCase();
+    let fallbackReply = "Hi! I'm Streetly, your AI travel assistant for Pakistan. I'm here to help you plan your trip to Northern Pakistan destinations like Hunza Valley, Skardu, Naran, Swat, Chitral, Fairy Meadows, and Neelum Valley. How can I assist you today? 🌄";
+    
+    if (lowerMessage.includes("hotel") || lowerMessage.includes("accommodation") || lowerMessage.includes("stay")) {
+      fallbackReply = "🏨 For accommodations in Northern Pakistan: I recommend booking in advance, especially during peak season (May-October). Popular areas include Hunza Valley, Skardu, and Swat Valley with various options from guesthouses to hotels.";
+    } else if (lowerMessage.includes("flood") || lowerMessage.includes("flooding")) {
+      fallbackReply = "🌊 Regarding flood conditions in Northern Pakistan: I recommend checking with local authorities and weather services for real-time updates. Generally, avoid traveling during heavy rainfall periods and stay informed about weather conditions.";
+    } else if (lowerMessage.includes("weather") || lowerMessage.includes("temperature")) {
+      fallbackReply = "🌤️ For current weather in Northern Pakistan, I suggest checking local weather services. The region experiences cold winters with temperatures often below freezing, especially in higher altitudes like Hunza and Skardu.";
+    } else if (lowerMessage.includes("route") || lowerMessage.includes("road") || lowerMessage.includes("travel")) {
+      fallbackReply = "🛣️ For travel routes in Northern Pakistan: The Karakoram Highway is the main route. Always check road conditions, especially during winter months. Some mountain passes may be closed due to weather.";
+    }
+    
+    appendMessage('bot', fallbackReply);
   });
 }
 
