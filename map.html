@@ -1144,15 +1144,14 @@ function sendMessage() {
   appendMessage('user', message);
   input.value = '';
   
-  // Send to Gemini API
-  fetch('https://streetly.vercel.app/api/gemini', {
+  // Send to Chat API
+  fetch('/api/chat', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({ 
-      message: message,
-      city: 'Pakistan'
+      message: message
     })
   })
   .then(response => {
