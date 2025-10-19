@@ -1398,8 +1398,8 @@ function handlePredictDisaster() {
   console.log('🔴 Predict Disaster clicked');
   
   // Use the ML function from map_ml.js if available
-  if (typeof window.handlePredictDisaster === 'function') {
-    window.handlePredictDisaster();
+  if (typeof window.fetchMLPredictions === 'function') {
+    window.fetchMLPredictions();
   } else {
     // Fallback to original function
     const btn = document.getElementById('predictDisasterBtn');
