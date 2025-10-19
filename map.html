@@ -1072,19 +1072,11 @@ async function planTrip(){
       const coords = cityCoords[destination];
       if (coords) {
         try {
-          // Try OpenWeather API first
-          const weatherRes = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${coords.lat}&lon=${coords.lon}&appid=cd3d503156303b838b4f9b8db21c646c&units=metric`);
-          if (weatherRes.ok) {
-            const data = await weatherRes.json();
-            weather = {
-              temp: Math.round(data.main.temp),
-              feels_like: Math.round(data.main.feels_like),
-              condition: data.weather[0].description,
-              humidity: data.main.humidity,
-              wind_speed: data.wind.speed
-            };
+          // Use the new weather API system
+          if (window.weatherAPI) {
+            weather = await window.weatherAPI.getWeatherByCoords(coords.lat, coords.lon);
           } else {
-            throw new Error(`API returned ${weatherRes.status}`);
+            throw new Error("Weather API not available");
           }
         } catch (e) {
           console.log("Weather API failed, using fallback data:", e);
@@ -2078,11 +2070,14 @@ window.testRealData = async function() {
 };
   </script>
 
-<!-- ML Predictions Integration -->
-<script src="js/map_ml.js"></script>
+    <!-- Weather API Integration -->
+    <script src="js/weather-api.js"></script>
+    
+    <!-- ML Predictions Integration -->
+    <script src="js/map_ml.js"></script>
 
-<script async defer
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDJvDcdmau-Jt93UhPI7xjy-CQ0cLh-wqc&callback=initMap">
-  </script>
+    <script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDJvDcdmau-Jt93UhPI7xjy-CQ0cLh-wqc&callback=initMap">
+      </script>
 </body>
 </html>
