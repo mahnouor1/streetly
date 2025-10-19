@@ -1144,25 +1144,14 @@ function sendMessage() {
   appendMessage('user', message);
   input.value = '';
   
-  // Send to Gemini API
-  fetch('/api/gemini', {
+  // Send to Chat API (fallback to working endpoint)
+  fetch('/api/chat', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({ 
-      prompt: `You are Streetly, an expert AI travel assistant for Pakistan. You specialize in Northern Pakistan destinations like Hunza Valley, Skardu, Naran, Swat, Chitral, Fairy Meadows, and Neelum Valley.
-
-User's question: "${message}"
-
-Provide helpful, accurate, and friendly travel information. Include practical tips, safety advice, and local insights. Keep responses concise but informative.
-
-If asked about weather, floods, or natural disasters, provide current information and safety advice.
-If asked about routes, provide practical travel guidance.
-If asked about accommodations, suggest realistic options.
-If asked about local culture, share authentic insights.
-
-Respond in a conversational, helpful tone as a local travel expert.`
+      message: message
     })
   })
   .then(response => {

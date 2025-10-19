@@ -18,16 +18,16 @@ export default async function handler(req, res) {
     // Enhanced rule-based chatbot for Northern Pakistan travel
     const responses = {
       "hello": "Hi! I'm Streetly, your AI travel assistant for Pakistan. How can I help you plan your trip today? 🌄",
-      "best routes in skardu": "The best routes to Skardu include the Karakoram Highway (N-35) via Gilgit, or flights from Islamabad (weather permitting). 🚗✈️",
-      "weather": "You can check live weather using our integrated weather dashboard on the map. 🌤️",
-      "hotels": "Skardu offers great options like Shangrila Resort, Serena Shigar Fort, and local guest houses near Upper Kachura Lake. 🏨",
-      "flood": "For flood conditions in Northern Pakistan, check with local authorities and weather services. Avoid traveling during heavy rainfall periods. 🌊",
-      "hunza": "Hunza Valley is beautiful! Best time to visit is May-October. Don't miss Altit and Baltit forts, and the stunning Attabad Lake. 🏔️",
-      "naran": "Naran offers amazing views of Nanga Parbat! Visit in summer (June-September) and check road conditions before traveling. ⛰️",
-      "swat": "Swat Valley is known as the 'Switzerland of Pakistan'. Visit Malam Jabba for skiing and enjoy the beautiful valleys. 🎿",
-      "chitral": "Chitral is rich in culture! Visit during summer months and explore the Kalash valleys for unique cultural experiences. 🏛️",
-      "fairy meadows": "Fairy Meadows offers incredible views of Nanga Parbat! Best visited in summer with proper hiking gear. 🥾",
-      "neelum valley": "Neelum Valley is stunning! Visit during summer months and enjoy the beautiful rivers and mountains. 🌊",
+      "best routes in skardu": "The best routes to Skardu include the Karakoram Highway (N-35) via Gilgit, or flights from Islamabad (weather permitting). Always check road conditions, especially during winter months. 🚗✈️",
+      "weather": "You can check live weather using our integrated weather dashboard on the map. The region experiences cold winters with temperatures often below freezing, especially in higher altitudes. 🌤️",
+      "hotels": "Skardu offers great options like Shangrila Resort, Serena Shigar Fort, and local guest houses near Upper Kachura Lake. Book in advance during peak season (May-October). 🏨",
+      "flood": "For flood conditions in Northern Pakistan, check with local authorities and weather services. Avoid traveling during heavy rainfall periods and stay informed about weather conditions. 🌊",
+      "hunza": "Hunza Valley is beautiful! Best time to visit is May-October. Don't miss Altit and Baltit forts, and the stunning Attabad Lake. The valley offers incredible mountain views and rich culture. 🏔️",
+      "naran": "Naran offers amazing views of Nanga Parbat! Visit in summer (June-September) and check road conditions before traveling. The journey is scenic but can be challenging. ⛰️",
+      "swat": "Swat Valley is known as the 'Switzerland of Pakistan'. Visit Malam Jabba for skiing and enjoy the beautiful valleys. Rich in history and natural beauty. 🎿",
+      "chitral": "Chitral is rich in culture! Visit during summer months and explore the Kalash valleys for unique cultural experiences. The region offers diverse cultural heritage. 🏛️",
+      "fairy meadows": "Fairy Meadows offers incredible views of Nanga Parbat! Best visited in summer with proper hiking gear. The trek is challenging but rewarding. 🥾",
+      "neelum valley": "Neelum Valley is stunning! Visit during summer months and enjoy the beautiful rivers and mountains. Perfect for nature lovers and photography. 🌊",
       "bye": "Safe travels! ✨ Don't forget to check weather and road conditions before you go!"
     };
 
