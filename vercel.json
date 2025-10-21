@@ -1,5 +1,6 @@
 {
   "version": 2,
+  "name": "streetly",
   "builds": [
     { "src": "api/**/*.js", "use": "@vercel/node" },
     { "src": "**", "use": "@vercel/static" }
@@ -8,5 +9,10 @@
     { "src": "/api/(.*)", "dest": "/api/$1.js" },
     { "src": "/map", "dest": "/map.html" },
     { "src": "/(.*)", "dest": "/$1" }
-  ]
+  ],
+  "functions": {
+    "api/**/*.js": {
+      "runtime": "nodejs18.x"
+    }
+  }
 }
